@@ -36,3 +36,4 @@ build/
 ## Other ##
 .env
 data/
+.DS_Store
