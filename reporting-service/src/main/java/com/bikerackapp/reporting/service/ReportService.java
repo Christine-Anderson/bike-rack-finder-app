@@ -5,6 +5,7 @@ import com.bikerackapp.reporting.model.Report;
 import com.bikerackapp.reporting.controller.ReportController;
 import com.bikerackapp.reporting.repository.ReportRepository;
 import com.bikerackapp.reporting.dto.ReportRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,11 @@ public class ReportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportController.class);
 
     private final ReportRepository reportRepository;
+    private final ReportAggregationService reportAggregationService;
 
-    public ReportService(ReportRepository reportRepository) {
+    public ReportService(ReportRepository reportRepository, ReportAggregationService reportAggregationService) {
         this.reportRepository = reportRepository;
+        this.reportAggregationService = reportAggregationService;
     }
 
     public ReportResponse createReport(ReportRequest reportRequest) {
@@ -34,6 +37,7 @@ public class ReportService {
         );
         reportRepository.save(report);
         LOGGER.info("Successfully created report with ID: {}", reportRequest.id());
+        this.updateReportAggregation(report);
         return convertToDto(report);
     }
 
@@ -62,6 +66,7 @@ public class ReportService {
             report.setCreatedAt(reportRequest.createdAt());
             reportRepository.save(report);
             LOGGER.info("Successfully updated report with ID: {}", id);
+            this.updateReportAggregation(report);
             return convertToDto(report);
         } else {
             LOGGER.warn(REPORT_NOT_FOUND_WARNING, id);
@@ -71,8 +76,10 @@ public class ReportService {
 
     public boolean deleteReport(UUID id) {
         if (reportRepository.existsById(id)) {
+            Report report = reportRepository.findById(id).orElse(null);
             reportRepository.deleteById(id);
             LOGGER.info("Successfully deleted report with ID: {}", id);
+            this.updateReportAggregation(report);
             return true;
         } else {
             LOGGER.warn(REPORT_NOT_FOUND_WARNING, id);
@@ -89,5 +96,15 @@ public class ReportService {
                 report.getUserId(),
                 report.getCreatedAt()
         );
+    }
+
+    private void updateReportAggregation(Report report) {
+        if (report != null) {
+            if (report.getReportType() != Report.ReportType.THEFT) {
+                reportAggregationService.calculateRecentThefts(report.getRackId());
+            } else {
+                reportAggregationService.updateAvailableBikeRacks(report.getRackId(), report.getReportType());
+            }
+        }
     }
 }
