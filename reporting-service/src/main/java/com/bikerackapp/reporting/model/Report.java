@@ -16,7 +16,7 @@ public class Report {
     }
 
     @Id
-    private UUID id;
+    private UUID reportId;
 
     @Field("rackId")
     private UUID rackId;
@@ -33,8 +33,11 @@ public class Report {
     @Field("createdAt")
     private LocalDateTime createdAt;
 
+    public Report() {
+    }
+
     public Report(UUID rackId, ReportType reportType, String details, UUID userId, LocalDateTime createdAt) {
-        id = UUID.randomUUID();
+        reportId = UUID.randomUUID();
         this.rackId = rackId;
         this.reportType = reportType;
         this.details = details;
@@ -42,8 +45,17 @@ public class Report {
         this.createdAt = createdAt;
     }
 
-    public UUID getId() {
-        return id;
+    public Report(UUID reportId, UUID rackId, ReportType reportType, String details, UUID userId, LocalDateTime createdAt) {
+        this.reportId = reportId;
+        this.rackId = rackId;
+        this.reportType = reportType;
+        this.details = details;
+        this.userId = userId;
+        this.createdAt = createdAt;
+    }
+
+    public UUID getReportId() {
+        return reportId;
     }
 
     public UUID getRackId() {

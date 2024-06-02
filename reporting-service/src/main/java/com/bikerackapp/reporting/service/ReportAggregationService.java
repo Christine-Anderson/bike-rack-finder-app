@@ -18,7 +18,7 @@ public class ReportAggregationService {
         this.reportRepository = reportRepository;
     }
 
-    public int calculateRecentThefts(UUID rackId) {
+    public int calculateRecentThefts(UUID rackId) { // todo tests after this is sorted out
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime prevMonth = now.minusMonths(1);
         List<Report> theftReports = reportRepository.findByRackIdAndReportTypeWithinDateRange(rackId.toString(), Report.ReportType.THEFT, prevMonth, now);

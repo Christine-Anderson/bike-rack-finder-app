@@ -1,7 +1,7 @@
 package com.bikerackapp.reporting.controller;
 
-import com.bikerackapp.reporting.dto.ReportRequest;
-import com.bikerackapp.reporting.dto.ReportResponse;
+import com.bikerackapp.reporting.dto.ReportRequestDTO;
+import com.bikerackapp.reporting.dto.ReportResponseDTO;
 import com.bikerackapp.reporting.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,40 +22,40 @@ public class ReportController {
     }
 
     @GetMapping("/reports")
-    public ResponseEntity<List<ReportResponse>> getReports() {
-        List<ReportResponse> reports = reportService.getAllReports();
+    public ResponseEntity<List<ReportResponseDTO>> getReports() {
+        List<ReportResponseDTO> reports = reportService.getAllReports();
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("report/{id}")
-    public ResponseEntity<ReportResponse> getReportById(@PathVariable("id") UUID id) {
-        ReportResponse report = reportService.getReportById(id);
+    @GetMapping("report/{reportId}")
+    public ResponseEntity<ReportResponseDTO> getReportById(@PathVariable("reportId") UUID reportId) {
+        ReportResponseDTO report = reportService.getReportById(reportId);
         if (report != null) {
             return ResponseEntity.ok(report);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @PostMapping("/report")
-    public ResponseEntity<ReportResponse> createReport(@RequestBody ReportRequest reportRequest) {
-        ReportResponse createdReport = reportService.createReport(reportRequest);
+    @PostMapping("/report") //todo add report validation?
+    public ResponseEntity<ReportResponseDTO> createReport(@RequestBody ReportRequestDTO reportRequest) {
+        ReportResponseDTO createdReport = reportService.createReport(reportRequest);
         return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
     }
 
-    @PutMapping("report/{id}")
-    public ResponseEntity<ReportResponse> updateReport(@PathVariable("id") UUID id, @RequestBody ReportRequest reportRequest) {
-        ReportResponse updatedReport = reportService.updateReport(id, reportRequest);
+    @PutMapping("report/{reportId}")
+    public ResponseEntity<ReportResponseDTO> updateReport(@PathVariable("reportId") UUID reportId, @RequestBody ReportRequestDTO reportRequestDTO) {
+        ReportResponseDTO updatedReport = reportService.updateReport(reportId, reportRequestDTO);
         if (updatedReport != null) {
             return ResponseEntity.ok(updatedReport);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @DeleteMapping("report/{id}")
-    public ResponseEntity<Void> deleteReport(@PathVariable("id") UUID id) {
-        boolean isDeleted = reportService.deleteReport(id);
+    @DeleteMapping("report/{reportId}")
+    public ResponseEntity<Void> deleteReport(@PathVariable("reportId") UUID reportId) {
+        boolean isDeleted = reportService.deleteReport(reportId);
         if (isDeleted) {
             return ResponseEntity.noContent().build();
         } else {
