@@ -5,8 +5,8 @@ import com.bikerackapp.reporting.model.Report;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record ReportRequest(
-        UUID id,
+public record ReportResponseDTO(
+        UUID reportId,
         UUID rackId,
         Report.ReportType reportType,
         String details,

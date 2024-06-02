@@ -1,10 +1,10 @@
 package com.bikerackapp.reporting.service;
 
-import com.bikerackapp.reporting.dto.ReportResponse;
+import com.bikerackapp.reporting.dto.ReportResponseDTO;
 import com.bikerackapp.reporting.model.Report;
 import com.bikerackapp.reporting.controller.ReportController;
 import com.bikerackapp.reporting.repository.ReportRepository;
-import com.bikerackapp.reporting.dto.ReportRequest;
+import com.bikerackapp.reporting.dto.ReportRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
@@ -22,34 +22,35 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final ReportAggregationService reportAggregationService;
 
+    @Autowired
     public ReportService(ReportRepository reportRepository, ReportAggregationService reportAggregationService) {
         this.reportRepository = reportRepository;
         this.reportAggregationService = reportAggregationService;
     }
 
-    public ReportResponse createReport(ReportRequest reportRequest) {
+    public ReportResponseDTO createReport(ReportRequestDTO reportRequestDTO) {
         Report report = new Report(
-                reportRequest.rackId(),
-                reportRequest.reportType(),
-                reportRequest.details(),
-                reportRequest.userId(),
-                reportRequest.createdAt()
+                reportRequestDTO.rackId(),
+                reportRequestDTO.reportType(),
+                reportRequestDTO.details(),
+                reportRequestDTO.userId(),
+                reportRequestDTO.createdAt()
         );
         reportRepository.save(report);
-        LOGGER.info("Successfully created report with ID: {}", reportRequest.id());
+        LOGGER.info("Successfully created report with ID: {}", reportRequestDTO.reportId());
         this.updateReportAggregation(report);
         return convertToDto(report);
     }
 
-    public List<ReportResponse> getAllReports() {
+    public List<ReportResponseDTO> getAllReports() {
         List<Report> reports = reportRepository.findAll();
         return reports.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    public ReportResponse getReportById(UUID id) {
-        Report report = reportRepository.findById(id).orElse(null);
+    public ReportResponseDTO getReportById(UUID reportId) {
+        Report report = reportRepository.findById(reportId).orElse(null);
         if (report != null) {
             return convertToDto(report);
         } else {
@@ -57,41 +58,41 @@ public class ReportService {
         }
     }
 
-    public ReportResponse updateReport(UUID id, ReportRequest reportRequest) {
-       Report report = reportRepository.findById(id).orElse(null);
+    public ReportResponseDTO updateReport(UUID reportId, ReportRequestDTO reportRequestDTO) {
+       Report report = reportRepository.findById(reportId).orElse(null);
         if (report != null) {
-            report.setRackId(reportRequest.rackId());
-            report.setReportType(reportRequest.reportType());
-            report.setDetails(reportRequest.details());
-            report.setCreatedAt(reportRequest.createdAt());
+            report.setRackId(reportRequestDTO.rackId());
+            report.setReportType(reportRequestDTO.reportType());
+            report.setDetails(reportRequestDTO.details());
+            report.setCreatedAt(reportRequestDTO.createdAt());
             reportRepository.save(report);
-            LOGGER.info("Successfully updated report with ID: {}", id);
+            LOGGER.info("Successfully updated report with ID: {}", reportId);
             this.updateReportAggregation(report);
             return convertToDto(report);
         } else {
-            LOGGER.warn(REPORT_NOT_FOUND_WARNING, id);
+            LOGGER.warn(REPORT_NOT_FOUND_WARNING, reportId);
             return null;
         }
     }
 
-    public boolean deleteReport(UUID id) {
-        if (reportRepository.existsById(id)) {
-            Report report = reportRepository.findById(id).orElse(null);
-            reportRepository.deleteById(id);
-            LOGGER.info("Successfully deleted report with ID: {}", id);
+    public boolean deleteReport(UUID reportId) {
+        if (reportRepository.existsById(reportId)) {
+            Report report = reportRepository.findById(reportId).orElse(null);
+            reportRepository.deleteById(reportId);
+            LOGGER.info("Successfully deleted report with ID: {}", reportId);
             this.updateReportAggregation(report);
             return true;
         } else {
-            LOGGER.warn(REPORT_NOT_FOUND_WARNING, id);
+            LOGGER.warn(REPORT_NOT_FOUND_WARNING, reportId);
             return false;
         }
     }
 
-    private ReportResponse convertToDto(Report report) {
-        return new ReportResponse(
-                report.getId(),
+    private ReportResponseDTO convertToDto(Report report) {
+        return new ReportResponseDTO(
+                report.getReportId(),
                 report.getRackId(),
-                report.getReportType().name(),  // Convert enum to string
+                report.getReportType(),
                 report.getDetails(),
                 report.getUserId(),
                 report.getCreatedAt()
@@ -100,7 +101,7 @@ public class ReportService {
 
     private void updateReportAggregation(Report report) {
         if (report != null) {
-            if (report.getReportType() != Report.ReportType.THEFT) {
+            if (report.getReportType() == Report.ReportType.THEFT) {
                 reportAggregationService.calculateRecentThefts(report.getRackId());
             } else {
                 reportAggregationService.updateAvailableBikeRacks(report.getRackId(), report.getReportType());
