@@ -1,7 +1,7 @@
 package com.bikerackapp.reporting.controller;
 
-import com.bikerackapp.reporting.dto.ReportRequestDTO;
-import com.bikerackapp.reporting.dto.ReportResponseDTO;
+import com.bikerackapp.reporting.DTO.ReportRequestDTO;
+import com.bikerackapp.reporting.DTO.ReportResponseDTO;
 import com.bikerackapp.reporting.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,14 +38,14 @@ public class ReportController {
     }
 
     @PostMapping("/report") //todo add report validation?
-    public ResponseEntity<ReportResponseDTO> createReport(@RequestBody ReportRequestDTO reportRequest) {
-        ReportResponseDTO createdReport = reportService.createReport(reportRequest);
+    public ResponseEntity<ReportResponseDTO> createReport(@RequestBody ReportRequestDTO newReport) {
+        ReportResponseDTO createdReport = reportService.createReport(newReport);
         return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
     }
 
     @PutMapping("report/{reportId}")
-    public ResponseEntity<ReportResponseDTO> updateReport(@PathVariable("reportId") UUID reportId, @RequestBody ReportRequestDTO reportRequestDTO) {
-        ReportResponseDTO updatedReport = reportService.updateReport(reportId, reportRequestDTO);
+    public ResponseEntity<ReportResponseDTO> updateReport(@PathVariable("reportId") UUID reportId, @RequestBody ReportResponseDTO reportToUpdate) {
+        ReportResponseDTO updatedReport = reportService.updateReport(reportId, reportToUpdate);
         if (updatedReport != null) {
             return ResponseEntity.ok(updatedReport);
         } else {
@@ -62,5 +62,4 @@ public class ReportController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
 }

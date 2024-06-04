@@ -1,10 +1,10 @@
 package com.bikerackapp.reporting.service;
 
-import com.bikerackapp.reporting.dto.ReportResponseDTO;
+import com.bikerackapp.reporting.DTO.ReportRequestDTO;
+import com.bikerackapp.reporting.DTO.ReportResponseDTO;
 import com.bikerackapp.reporting.model.Report;
 import com.bikerackapp.reporting.controller.ReportController;
 import com.bikerackapp.reporting.repository.ReportRepository;
-import com.bikerackapp.reporting.dto.ReportRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
@@ -28,16 +28,16 @@ public class ReportService {
         this.reportAggregationService = reportAggregationService;
     }
 
-    public ReportResponseDTO createReport(ReportRequestDTO reportRequestDTO) {
+    public ReportResponseDTO createReport(ReportRequestDTO newReport) {
         Report report = new Report(
-                reportRequestDTO.rackId(),
-                reportRequestDTO.reportType(),
-                reportRequestDTO.details(),
-                reportRequestDTO.userId(),
-                reportRequestDTO.createdAt()
+                newReport.rackId(),
+                newReport.reportType(),
+                newReport.details(),
+                newReport.userId(),
+                newReport.createdAt()
         );
         reportRepository.save(report);
-        LOGGER.info("Successfully created report with ID: {}", reportRequestDTO.reportId());
+        LOGGER.info("Successfully created report with ID: {}", report.getReportId());
         this.updateReportAggregation(report);
         return convertToDto(report);
     }
@@ -58,7 +58,7 @@ public class ReportService {
         }
     }
 
-    public ReportResponseDTO updateReport(UUID reportId, ReportRequestDTO reportRequestDTO) {
+    public ReportResponseDTO updateReport(UUID reportId, ReportResponseDTO reportRequestDTO) {
        Report report = reportRepository.findById(reportId).orElse(null);
         if (report != null) {
             report.setRackId(reportRequestDTO.rackId());

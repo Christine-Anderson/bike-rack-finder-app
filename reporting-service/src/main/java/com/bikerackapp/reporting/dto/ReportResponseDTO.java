@@ -1,4 +1,4 @@
-package com.bikerackapp.reporting.dto;
+package com.bikerackapp.reporting.DTO;
 
 import com.bikerackapp.reporting.model.Report;
 
