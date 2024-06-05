@@ -1,6 +1,7 @@
 package com.bikerackapp.bike_rack_service.controller;
 
-import com.bikerackapp.bike_rack_service.DTO.BikeRackRequestDTO;
+import com.bikerackapp.bike_rack_service.DTO.CreateBikeRackRequestDTO;
+import com.bikerackapp.bike_rack_service.DTO.UpdateBikeRackRequestDTO;
 import com.bikerackapp.bike_rack_service.DTO.BikeRackResponseDTO;
 import com.bikerackapp.bike_rack_service.service.BikeRackService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,13 @@ public class BikeRackController {
     }
 
     @PostMapping("/bikeRack")
-    public ResponseEntity<BikeRackResponseDTO> createBikeRack(@RequestBody BikeRackRequestDTO newBikeRack) {
+    public ResponseEntity<BikeRackResponseDTO> createBikeRack(@RequestBody CreateBikeRackRequestDTO newBikeRack) {
         BikeRackResponseDTO createdBikeRack = bikeRackService.createBikeRack(newBikeRack);
         return new ResponseEntity<>(createdBikeRack, HttpStatus.CREATED);
     }
 
     @PutMapping("/bikeRack/{rackId}")
-    public ResponseEntity<BikeRackResponseDTO> updateBikeRack(@PathVariable("rackId") UUID rackId, @RequestBody BikeRackRequestDTO bikeRackToUpdate) {
+    public ResponseEntity<BikeRackResponseDTO> updateBikeRack(@PathVariable("rackId") UUID rackId, @RequestBody UpdateBikeRackRequestDTO bikeRackToUpdate) {
         BikeRackResponseDTO updatedBikeRack = bikeRackService.updateBikeRack(rackId, bikeRackToUpdate);
         if (updatedBikeRack != null) {
             return ResponseEntity.ok(updatedBikeRack);

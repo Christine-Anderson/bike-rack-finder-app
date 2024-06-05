@@ -1,0 +1,1 @@
+ALTER TABLE bike_racks ADD COLUMN thefts_in_last_month INT DEFAULT 0;

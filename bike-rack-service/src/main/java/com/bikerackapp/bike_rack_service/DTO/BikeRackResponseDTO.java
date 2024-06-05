@@ -6,5 +6,6 @@ public record BikeRackResponseDTO(
         UUID rackId,
         double latitude,
         double longitude,
-        double rating
+        double rating,
+        int theftsInLastMonth
 ) {}

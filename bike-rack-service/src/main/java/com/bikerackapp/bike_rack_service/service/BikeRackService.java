@@ -1,6 +1,7 @@
 package com.bikerackapp.bike_rack_service.service;
 
-import com.bikerackapp.bike_rack_service.DTO.BikeRackRequestDTO;
+import com.bikerackapp.bike_rack_service.DTO.CreateBikeRackRequestDTO;
+import com.bikerackapp.bike_rack_service.DTO.UpdateBikeRackRequestDTO;
 import com.bikerackapp.bike_rack_service.DTO.BikeRackResponseDTO;
 import com.bikerackapp.bike_rack_service.controller.BikeRackController;
 import com.bikerackapp.bike_rack_service.model.BikeRack;
@@ -26,11 +27,10 @@ public class BikeRackService {
         this.bikeRackRepository = bikeRackRepository;
     }
 
-    public BikeRackResponseDTO createBikeRack(BikeRackRequestDTO newBikeRack) {
+    public BikeRackResponseDTO createBikeRack(CreateBikeRackRequestDTO newBikeRack) {
         BikeRack bikeRack = new BikeRack(
                 newBikeRack.latitude(),
-                newBikeRack.longitude(),
-                newBikeRack.rating()
+                newBikeRack.longitude()
         );
         bikeRackRepository.save(bikeRack);
         LOGGER.info("Successfully created bikeRack with ID: {}", bikeRack.getRackId());
@@ -53,12 +53,13 @@ public class BikeRackService {
         }
     }
 
-    public BikeRackResponseDTO updateBikeRack(UUID bikeRackId, BikeRackRequestDTO bikeRackRequestDTO) {
+    public BikeRackResponseDTO updateBikeRack(UUID bikeRackId, UpdateBikeRackRequestDTO bikeRackRequestDTO) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId).orElse(null);
         if (bikeRack != null) {
             bikeRack.setLatitude(bikeRackRequestDTO.latitude());
             bikeRack.setLongitude(bikeRackRequestDTO.longitude());
             bikeRack.setRating(bikeRackRequestDTO.rating());
+            bikeRack.setTheftsInLastMonth(bikeRackRequestDTO.theftsInLastMonth());
             bikeRackRepository.save(bikeRack);
             LOGGER.info("Successfully updated bikeRack with ID: {}", bikeRackId);
             return convertToDto(bikeRack);
@@ -84,7 +85,8 @@ public class BikeRackService {
                 bikeRack.getRackId(),
                 bikeRack.getLatitude(),
                 bikeRack.getLongitude(),
-                bikeRack.getRating()
+                bikeRack.getRating(),
+                bikeRack.getTheftsInLastMonth()
         );
     }
 }
