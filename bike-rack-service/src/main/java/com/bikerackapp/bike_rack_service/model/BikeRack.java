@@ -1,10 +1,8 @@
 package com.bikerackapp.bike_rack_service.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -13,9 +11,14 @@ import java.util.UUID;
 public class BikeRack {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "rack_id")
     private UUID rackId;
+    @Column(name = "latitude", nullable = false)
     private double latitude;
+    @Column(name = "longitude", nullable = false)
     private double longitude;
+    @Column(name = "rating")
     private double rating;
 
     public BikeRack() {
