@@ -27,7 +27,7 @@ public class ReportController {
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("report/{reportId}")
+    @GetMapping("/report/{reportId}")
     public ResponseEntity<ReportResponseDTO> getReportById(@PathVariable("reportId") UUID reportId) {
         ReportResponseDTO report = reportService.getReportById(reportId);
         if (report != null) {
@@ -43,7 +43,7 @@ public class ReportController {
         return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
     }
 
-    @PutMapping("report/{reportId}")
+    @PutMapping("/report/{reportId}")
     public ResponseEntity<ReportResponseDTO> updateReport(@PathVariable("reportId") UUID reportId, @RequestBody ReportResponseDTO reportToUpdate) {
         ReportResponseDTO updatedReport = reportService.updateReport(reportId, reportToUpdate);
         if (updatedReport != null) {
@@ -53,7 +53,7 @@ public class ReportController {
         }
     }
 
-    @DeleteMapping("report/{reportId}")
+    @DeleteMapping("/report/{reportId}")
     public ResponseEntity<Void> deleteReport(@PathVariable("reportId") UUID reportId) {
         boolean isDeleted = reportService.deleteReport(reportId);
         if (isDeleted) {
