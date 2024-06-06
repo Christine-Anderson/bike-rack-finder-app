@@ -18,9 +18,11 @@ public class BikeRack {
     private double latitude;
     @Column(name = "longitude", nullable = false)
     private double longitude;
-    @Column(name = "rating")
-    private double rating; // todo rating determined by user votes?
-    @Column(name = "thefts_in_last_month")
+    @Column(name = "rating", nullable = false)
+    private double rating;
+    @Column(name = "num_ratings", nullable = false)
+    private int numRatings;
+    @Column(name = "thefts_in_last_month", nullable = false)
     private int theftsInLastMonth;
 
     public BikeRack() {
@@ -30,17 +32,11 @@ public class BikeRack {
         this.latitude = latitude;
         this.longitude = longitude;
         this.rating = 0;
+        this.numRatings = 0;
         this.theftsInLastMonth = 0;
     }
 
-    public BikeRack(double latitude, double longitude, double rating, int theftsInLastMonth) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.rating = rating;
-        this.theftsInLastMonth = theftsInLastMonth;
-    }
-
-    public BikeRack(UUID rackId, double latitude, double longitude, double rating, int theftsInLastMonth) {
+    public BikeRack(UUID rackId, double latitude, double longitude, double rating, int numRatings, int theftsInLastMonth) {
         this.rackId = rackId;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -64,6 +60,10 @@ public class BikeRack {
         return rating;
     }
 
+    public int getNumRatings() {
+        return numRatings;
+    }
+
     public int getTheftsInLastMonth() {
         return theftsInLastMonth;
     }
@@ -80,8 +80,16 @@ public class BikeRack {
         this.rating = rating;
     }
 
+    public void setNumRatings(int numRatings) {
+        this.numRatings = numRatings;
+    }
+
     public void setTheftsInLastMonth(int theftsInLastMonth) {
         this.theftsInLastMonth = theftsInLastMonth;
+    }
+
+    public void incrementNumRatings() {
+        numRatings++;
     }
 }
 
