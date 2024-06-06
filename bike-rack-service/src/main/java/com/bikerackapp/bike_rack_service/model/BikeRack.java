@@ -29,10 +29,11 @@ public class BikeRack {
     public BikeRack(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+        this.rating = 0;
+        this.theftsInLastMonth = 0;
     }
 
     public BikeRack(double latitude, double longitude, double rating, int theftsInLastMonth) {
-        this.rackId = rackId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.rating = rating;
