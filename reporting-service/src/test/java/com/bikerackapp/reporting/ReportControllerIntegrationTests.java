@@ -46,9 +46,6 @@ class ReportControllerIntegrationTests {
 
     private List<Report> reports;
 
-    @LocalServerPort
-    private Integer port;
-
     @BeforeAll
     static void beforeAll() {
         mongoDBContainer.start();
