@@ -41,11 +41,7 @@ public class BikeRackController {
     @GetMapping("/{rackId}")
     public ResponseEntity<BikeRackResponseDTO> getBikeRackById(@PathVariable("rackId") UUID rackId) {
         BikeRackResponseDTO bikeRack = bikeRackService.getBikeRackById(rackId);
-        if (bikeRack != null) {
-            return ResponseEntity.ok(bikeRack);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(bikeRack);
     }
 
     @PutMapping("/{rackId}")
@@ -54,11 +50,7 @@ public class BikeRackController {
             @Validated @RequestBody UpdateBikeRackRequestDTO bikeRackToUpdate
     ) {
         BikeRackResponseDTO updatedBikeRack = bikeRackService.updateBikeRack(rackId, bikeRackToUpdate);
-        if (updatedBikeRack != null) {
-            return ResponseEntity.ok(updatedBikeRack);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(updatedBikeRack);
     }
 
     @PutMapping("/{rackId}/rating")
@@ -72,11 +64,7 @@ public class BikeRackController {
 
     @DeleteMapping("/{rackId}")
     public ResponseEntity<Void> deleteReport(@PathVariable("rackId") UUID rackId) {
-        boolean isDeleted = bikeRackService.deleteBikeRack(rackId);
-        if (isDeleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        bikeRackService.deleteBikeRack(rackId);
+        return ResponseEntity.noContent().build();
     }
 }

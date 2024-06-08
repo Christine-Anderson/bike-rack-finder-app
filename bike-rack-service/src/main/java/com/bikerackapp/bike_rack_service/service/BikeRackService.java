@@ -4,6 +4,7 @@ import com.bikerackapp.bike_rack_service.DTO.CreateBikeRackRequestDTO;
 import com.bikerackapp.bike_rack_service.DTO.UpdateBikeRackRequestDTO;
 import com.bikerackapp.bike_rack_service.DTO.BikeRackResponseDTO;
 import com.bikerackapp.bike_rack_service.controller.BikeRackController;
+import com.bikerackapp.bike_rack_service.exceoption.ResourceNotFoundException;
 import com.bikerackapp.bike_rack_service.model.BikeRack;
 import com.bikerackapp.bike_rack_service.repository.BikeRackRepository;
 import org.slf4j.Logger;
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class BikeRackService {
-    private static final String REPORT_NOT_FOUND_WARNING = "Bike rack with ID: {} not found";
     private static final Logger LOGGER = LoggerFactory.getLogger(BikeRackController.class);
 
     private final BikeRackRepository bikeRackRepository;
@@ -45,32 +45,26 @@ public class BikeRackService {
     }
 
     public BikeRackResponseDTO getBikeRackById(UUID bikeRackId) {
-        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId).orElse(null);
-        if (bikeRack != null) {
-            return convertToDto(bikeRack);
-        } else {
-            return null;
-        }
+        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
+                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
+        return convertToDto(bikeRack);
     }
 
     public BikeRackResponseDTO updateBikeRack(UUID bikeRackId, UpdateBikeRackRequestDTO bikeRackRequestDTO) {
-        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId).orElse(null);
-        if (bikeRack != null) {
-            bikeRack.setLatitude(bikeRackRequestDTO.latitude());
-            bikeRack.setLongitude(bikeRackRequestDTO.longitude());
-            bikeRack.setRating(bikeRackRequestDTO.rating());
-            bikeRack.setTheftsInLastMonth(bikeRackRequestDTO.theftsInLastMonth());
-            bikeRackRepository.save(bikeRack);
-            LOGGER.info("Successfully updated bikeRack with ID: {}", bikeRackId);
-            return convertToDto(bikeRack);
-        } else {
-            LOGGER.warn(REPORT_NOT_FOUND_WARNING, bikeRackId);
-            return null;
-        }
+        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
+                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
+        bikeRack.setLatitude(bikeRackRequestDTO.latitude());
+        bikeRack.setLongitude(bikeRackRequestDTO.longitude());
+        bikeRack.setRating(bikeRackRequestDTO.rating());
+        bikeRack.setTheftsInLastMonth(bikeRackRequestDTO.theftsInLastMonth());
+        bikeRackRepository.save(bikeRack);
+        LOGGER.info("Successfully updated bikeRack with ID: {}", bikeRackId);
+        return convertToDto(bikeRack);
     }
 
     public BikeRackResponseDTO updateRating(UUID bikeRackId, double newRating) {
-        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId).orElse(null);
+        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
+                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
         int numRatings = bikeRack.getNumRatings();
         double totalRating = (bikeRack.getRating() * (double) numRatings);
         bikeRack.setRating((totalRating + newRating) / (double) (numRatings + 1));
@@ -80,14 +74,11 @@ public class BikeRackService {
     }
 
     public boolean deleteBikeRack(UUID bikeRackId) {
-        if (bikeRackRepository.existsById(bikeRackId)) {
-            bikeRackRepository.deleteById(bikeRackId);
-            LOGGER.info("Successfully deleted bikeRack with ID: {}", bikeRackId);
-            return true;
-        } else {
-            LOGGER.warn(REPORT_NOT_FOUND_WARNING, bikeRackId);
-            return false;
-        }
+        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
+                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
+        bikeRackRepository.deleteById(bikeRackId);
+        LOGGER.info("Successfully deleted bikeRack with ID: {}", bikeRackId);
+        return true;
     }
 
     private BikeRackResponseDTO convertToDto(BikeRack bikeRack) {
