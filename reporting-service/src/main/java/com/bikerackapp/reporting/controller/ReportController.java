@@ -6,12 +6,14 @@ import com.bikerackapp.reporting.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/report")
 public class ReportController {
 
     private final ReportService reportService;
@@ -21,13 +23,19 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping("/reports")
+    @PostMapping
+    public ResponseEntity<ReportResponseDTO> createReport(@Validated @RequestBody ReportRequestDTO newReport) {
+        ReportResponseDTO createdReport = reportService.createReport(newReport);
+        return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
+    }
+
+    @GetMapping
     public ResponseEntity<List<ReportResponseDTO>> getReports() {
         List<ReportResponseDTO> reports = reportService.getAllReports();
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("/report/{reportId}")
+    @GetMapping("/{reportId}")
     public ResponseEntity<ReportResponseDTO> getReportById(@PathVariable("reportId") UUID reportId) {
         ReportResponseDTO report = reportService.getReportById(reportId);
         if (report != null) {
@@ -37,13 +45,7 @@ public class ReportController {
         }
     }
 
-    @PostMapping("/report") //todo add report validation?
-    public ResponseEntity<ReportResponseDTO> createReport(@RequestBody ReportRequestDTO newReport) {
-        ReportResponseDTO createdReport = reportService.createReport(newReport);
-        return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/report/{reportId}")
+    @PutMapping("/{reportId}")
     public ResponseEntity<ReportResponseDTO> updateReport(@PathVariable("reportId") UUID reportId, @RequestBody ReportResponseDTO reportToUpdate) {
         ReportResponseDTO updatedReport = reportService.updateReport(reportId, reportToUpdate);
         if (updatedReport != null) {
@@ -53,7 +55,7 @@ public class ReportController {
         }
     }
 
-    @DeleteMapping("/report/{reportId}")
+    @DeleteMapping("/{reportId}")
     public ResponseEntity<Void> deleteReport(@PathVariable("reportId") UUID reportId) {
         boolean isDeleted = reportService.deleteReport(reportId);
         if (isDeleted) {

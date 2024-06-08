@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Document(value="report")
@@ -31,21 +31,21 @@ public class Report {
     private UUID userId;
 
     @Field("createdAt")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public Report() {
     }
 
-    public Report(UUID rackId, ReportType reportType, String details, UUID userId, LocalDateTime createdAt) {
+    public Report(UUID rackId, ReportType reportType, String details, UUID userId) {
         reportId = UUID.randomUUID();
         this.rackId = rackId;
         this.reportType = reportType;
         this.details = details;
         this.userId = userId;
-        this.createdAt = createdAt;
+        this.createdAt = Instant.now();
     }
 
-    public Report(UUID reportId, UUID rackId, ReportType reportType, String details, UUID userId, LocalDateTime createdAt) {
+    public Report(UUID reportId, UUID rackId, ReportType reportType, String details, UUID userId, Instant createdAt) {
         this.reportId = reportId;
         this.rackId = rackId;
         this.reportType = reportType;
@@ -74,7 +74,7 @@ public class Report {
         return userId;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
@@ -90,7 +90,7 @@ public class Report {
         this.details = details;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 }

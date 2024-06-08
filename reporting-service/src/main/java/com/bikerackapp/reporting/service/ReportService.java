@@ -33,8 +33,7 @@ public class ReportService {
                 newReport.rackId(),
                 newReport.reportType(),
                 newReport.details(),
-                newReport.userId(),
-                newReport.createdAt()
+                newReport.userId()
         );
         reportRepository.save(report);
         LOGGER.info("Successfully created report with ID: {}", report.getReportId());

@@ -2,7 +2,7 @@ package com.bikerackapp.reporting.DTO;
 
 import com.bikerackapp.reporting.model.Report;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public record ReportResponseDTO(
@@ -11,5 +11,5 @@ public record ReportResponseDTO(
         Report.ReportType reportType,
         String details,
         UUID userId,
-        LocalDateTime createdAt
+        Instant createdAt
 ) {}
