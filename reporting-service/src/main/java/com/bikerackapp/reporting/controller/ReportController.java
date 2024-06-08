@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/report")
+@Validated
 public class ReportController {
 
     private final ReportService reportService;
@@ -38,30 +39,18 @@ public class ReportController {
     @GetMapping("/{reportId}")
     public ResponseEntity<ReportResponseDTO> getReportById(@PathVariable("reportId") UUID reportId) {
         ReportResponseDTO report = reportService.getReportById(reportId);
-        if (report != null) {
-            return ResponseEntity.ok(report);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(report);
     }
 
     @PutMapping("/{reportId}")
     public ResponseEntity<ReportResponseDTO> updateReport(@PathVariable("reportId") UUID reportId, @RequestBody ReportResponseDTO reportToUpdate) {
         ReportResponseDTO updatedReport = reportService.updateReport(reportId, reportToUpdate);
-        if (updatedReport != null) {
-            return ResponseEntity.ok(updatedReport);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(updatedReport);
     }
 
     @DeleteMapping("/{reportId}")
     public ResponseEntity<Void> deleteReport(@PathVariable("reportId") UUID reportId) {
-        boolean isDeleted = reportService.deleteReport(reportId);
-        if (isDeleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        reportService.deleteReport(reportId);
+        return ResponseEntity.noContent().build();
     }
 }
