@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -110,7 +109,7 @@ class ReportControllerIntegrationTests {
 
     @Test
     void givenGetAllReportsRequest_hasReports_thenReturnsAllReports() throws Exception {
-        this.mockMvc.perform(get("/reports"))
+        this.mockMvc.perform(get("/report"))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.size()", is(reports.size())));
     }
@@ -208,7 +207,7 @@ class ReportControllerIntegrationTests {
         this.mockMvc.perform(delete("/report/{reportId}", reportId))
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
 
-        this.mockMvc.perform(get("/reports"))
+        this.mockMvc.perform(get("/report"))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.size()", is(reports.size() - 1)));
     }
