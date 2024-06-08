@@ -4,9 +4,12 @@ import com.bikerackapp.bike_rack_service.DTO.CreateBikeRackRequestDTO;
 import com.bikerackapp.bike_rack_service.DTO.UpdateBikeRackRequestDTO;
 import com.bikerackapp.bike_rack_service.DTO.BikeRackResponseDTO;
 import com.bikerackapp.bike_rack_service.service.BikeRackService;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +27,7 @@ public class BikeRackController {
     }
 
     @PostMapping
-    public ResponseEntity<BikeRackResponseDTO> createBikeRack(@RequestBody CreateBikeRackRequestDTO newBikeRack) {
+    public ResponseEntity<BikeRackResponseDTO> createBikeRack(@Validated @RequestBody CreateBikeRackRequestDTO newBikeRack) {
         BikeRackResponseDTO createdBikeRack = bikeRackService.createBikeRack(newBikeRack);
         return new ResponseEntity<>(createdBikeRack, HttpStatus.CREATED);
     }
@@ -46,7 +49,10 @@ public class BikeRackController {
     }
 
     @PutMapping("/{rackId}")
-    public ResponseEntity<BikeRackResponseDTO> updateBikeRack(@PathVariable("rackId") UUID rackId, @RequestBody UpdateBikeRackRequestDTO bikeRackToUpdate) {
+    public ResponseEntity<BikeRackResponseDTO> updateBikeRack(
+            @PathVariable("rackId") UUID rackId,
+            @Validated @RequestBody UpdateBikeRackRequestDTO bikeRackToUpdate
+    ) {
         BikeRackResponseDTO updatedBikeRack = bikeRackService.updateBikeRack(rackId, bikeRackToUpdate);
         if (updatedBikeRack != null) {
             return ResponseEntity.ok(updatedBikeRack);
@@ -56,7 +62,10 @@ public class BikeRackController {
     }
 
     @PutMapping("/{rackId}/rating")
-    public ResponseEntity<BikeRackResponseDTO> updateBikeRackRating(@PathVariable("rackId") UUID rackId, @RequestParam double newRating) {
+    public ResponseEntity<BikeRackResponseDTO> updateBikeRackRating(
+            @PathVariable("rackId") UUID rackId,
+            @RequestParam @DecimalMin("0.0") @DecimalMax("5.0") double newRating
+    ) {
         BikeRackResponseDTO updatedBikeRack = bikeRackService.updateRating(rackId, newRating);
         return new ResponseEntity<>(updatedBikeRack, HttpStatus.OK);
     }
