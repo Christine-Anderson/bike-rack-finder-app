@@ -8,6 +8,3 @@ services:
       - .env
     volumes:
       - ./data:/data/db
-  app:
-    env_file:
-      - .env
