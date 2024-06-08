@@ -69,6 +69,16 @@ public class BikeRackService {
         }
     }
 
+    public BikeRackResponseDTO updateRating(UUID bikeRackId, double newRating) {
+        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId).orElse(null);
+        int numRatings = bikeRack.getNumRatings();
+        double totalRating = (bikeRack.getRating() * (double) numRatings);
+        bikeRack.setRating((totalRating + newRating) / (double) (numRatings + 1));
+        bikeRack.incrementNumRatings();
+        bikeRackRepository.save(bikeRack);
+        return convertToDto(bikeRack);
+    }
+
     public boolean deleteBikeRack(UUID bikeRackId) {
         if (bikeRackRepository.existsById(bikeRackId)) {
             bikeRackRepository.deleteById(bikeRackId);

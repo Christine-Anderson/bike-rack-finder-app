@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/bikeRack")
 public class BikeRackController {
 
     private final BikeRackService bikeRackService;
@@ -22,13 +23,19 @@ public class BikeRackController {
         this.bikeRackService = bikeRackService;
     }
 
-    @GetMapping("/bikeRacks")
+    @PostMapping
+    public ResponseEntity<BikeRackResponseDTO> createBikeRack(@RequestBody CreateBikeRackRequestDTO newBikeRack) {
+        BikeRackResponseDTO createdBikeRack = bikeRackService.createBikeRack(newBikeRack);
+        return new ResponseEntity<>(createdBikeRack, HttpStatus.CREATED);
+    }
+
+    @GetMapping
     public ResponseEntity<List<BikeRackResponseDTO>> getBikeRacks() {
         List<BikeRackResponseDTO> bikeRacks = bikeRackService.getAllBikeRacks();
         return ResponseEntity.ok(bikeRacks);
     }
 
-    @GetMapping("/bikeRack/{rackId}")
+    @GetMapping("/{rackId}")
     public ResponseEntity<BikeRackResponseDTO> getBikeRackById(@PathVariable("rackId") UUID rackId) {
         BikeRackResponseDTO bikeRack = bikeRackService.getBikeRackById(rackId);
         if (bikeRack != null) {
@@ -38,13 +45,7 @@ public class BikeRackController {
         }
     }
 
-    @PostMapping("/bikeRack")
-    public ResponseEntity<BikeRackResponseDTO> createBikeRack(@RequestBody CreateBikeRackRequestDTO newBikeRack) {
-        BikeRackResponseDTO createdBikeRack = bikeRackService.createBikeRack(newBikeRack);
-        return new ResponseEntity<>(createdBikeRack, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/bikeRack/{rackId}")
+    @PutMapping("/{rackId}")
     public ResponseEntity<BikeRackResponseDTO> updateBikeRack(@PathVariable("rackId") UUID rackId, @RequestBody UpdateBikeRackRequestDTO bikeRackToUpdate) {
         BikeRackResponseDTO updatedBikeRack = bikeRackService.updateBikeRack(rackId, bikeRackToUpdate);
         if (updatedBikeRack != null) {
@@ -54,7 +55,13 @@ public class BikeRackController {
         }
     }
 
-    @DeleteMapping("/bikeRack/{rackId}")
+    @PutMapping("/{rackId}/rating")
+    public ResponseEntity<BikeRackResponseDTO> updateBikeRackRating(@PathVariable("rackId") UUID rackId, @RequestParam double newRating) {
+        BikeRackResponseDTO updatedBikeRack = bikeRackService.updateRating(rackId, newRating);
+        return new ResponseEntity<>(updatedBikeRack, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{rackId}")
     public ResponseEntity<Void> deleteReport(@PathVariable("rackId") UUID rackId) {
         boolean isDeleted = bikeRackService.deleteBikeRack(rackId);
         if (isDeleted) {
