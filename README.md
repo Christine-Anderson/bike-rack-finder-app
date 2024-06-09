@@ -6,8 +6,10 @@ As a user I want to:
 * view bikes racks on a map
 * find the closest bike rack to a given location
 * view the number of recent thefts for a bike rack
+* view the rating of a bike rack
 * report thefts from a bike rack
 * report the addition/removal of bike racks
+* submit a rating for a bike rack
 
 ### Current plan:
 <img width="425" alt="Screenshot 2024-06-08 at 8 08 41 PM" src="https://github.com/Christine-Anderson/bike-rack-finder-app/assets/114715340/3afde3fb-dfe0-4f85-be7d-273bd8c26d84">
