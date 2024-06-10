@@ -1,4 +1,4 @@
-package com.bikerackapp.bike_rack_service.exceoption;
+package com.bikerackapp.bike_rack_service.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
