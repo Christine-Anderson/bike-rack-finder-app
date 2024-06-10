@@ -40,4 +40,5 @@ mvnw.cmd
 ## Other ##
 .env
 mysql/
+data/
 .DS_Store
