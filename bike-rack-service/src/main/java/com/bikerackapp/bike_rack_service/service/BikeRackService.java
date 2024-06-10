@@ -4,12 +4,15 @@ import com.bikerackapp.bike_rack_service.DTO.CreateBikeRackRequestDTO;
 import com.bikerackapp.bike_rack_service.DTO.UpdateBikeRackRequestDTO;
 import com.bikerackapp.bike_rack_service.DTO.BikeRackResponseDTO;
 import com.bikerackapp.bike_rack_service.controller.BikeRackController;
-import com.bikerackapp.bike_rack_service.exceoption.ResourceNotFoundException;
+import com.bikerackapp.bike_rack_service.exception.ResourceNotFoundException;
 import com.bikerackapp.bike_rack_service.model.BikeRack;
 import com.bikerackapp.bike_rack_service.repository.BikeRackRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +40,7 @@ public class BikeRackService {
         return convertToDto(bikeRack);
     }
 
+    @Cacheable(value = "bikeRacks")
     public List<BikeRackResponseDTO> getAllBikeRacks() {
         List<BikeRack> bikeRacks = bikeRackRepository.findAll();
         return bikeRacks.stream()
@@ -44,12 +48,14 @@ public class BikeRackService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO getBikeRackById(UUID bikeRackId) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
         return convertToDto(bikeRack);
     }
 
+    @CachePut(cacheNames = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO updateBikeRack(UUID bikeRackId, UpdateBikeRackRequestDTO bikeRackRequestDTO) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
@@ -62,6 +68,7 @@ public class BikeRackService {
         return convertToDto(bikeRack);
     }
 
+    @CachePut(cacheNames = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO updateRating(UUID bikeRackId, double newRating) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
@@ -73,6 +80,7 @@ public class BikeRackService {
         return convertToDto(bikeRack);
     }
 
+    @CacheEvict(cacheNames = "bikeRacks", key = "#bikeRackId")
     public boolean deleteBikeRack(UUID bikeRackId) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
