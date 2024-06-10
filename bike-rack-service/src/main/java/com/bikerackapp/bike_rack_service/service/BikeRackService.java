@@ -82,7 +82,7 @@ public class BikeRackService {
 
     @CacheEvict(cacheNames = "bikeRacks", key = "#bikeRackId")
     public boolean deleteBikeRack(UUID bikeRackId) {
-        BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
+        bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
         bikeRackRepository.deleteById(bikeRackId);
         LOGGER.info("Successfully deleted bikeRack with ID: {}", bikeRackId);
