@@ -7,6 +7,8 @@ import com.bikerackapp.bike_rack_service.controller.BikeRackController;
 import com.bikerackapp.bike_rack_service.exception.ResourceNotFoundException;
 import com.bikerackapp.bike_rack_service.model.BikeRack;
 import com.bikerackapp.bike_rack_service.repository.BikeRackRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +89,34 @@ public class BikeRackService {
         bikeRackRepository.deleteById(bikeRackId);
         LOGGER.info("Successfully deleted bikeRack with ID: {}", bikeRackId);
         return true;
+    }
+
+    public void processMessage(String message) {
+        LOGGER.info("Successfully received message from Reporting Service: {}", message);
+        System.out.println("Successfully received message from Reporting Service: " + message);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(message);
+
+            String reportType = rootNode.get("reportType").asText();
+            if(reportType.equals("THEFT")) {
+                bikeRackRepository.updateTheftsInLastMonth(
+                        UUID.fromString(rootNode.get("bikeRackId").asText()),
+                        rootNode.get("theftsInLastMonth").asInt()
+                );
+            } else if (reportType.equals("NEW_RACK")) {
+                BikeRack bikeRack = new BikeRack(
+                        rootNode.get("latitude").asDouble(),
+                        rootNode.get("longitude").asDouble()
+                );
+                bikeRackRepository.save(bikeRack);
+            } else if (reportType.equals("REMOVED_RACK")) {
+                bikeRackRepository.deleteById(UUID.fromString(rootNode.get("bikeRackId").asText()));
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error decoding message from Reporting Service\nmessage: {}\nerror: {}", message, e.getMessage());
+        }
     }
 
     private BikeRackResponseDTO convertToDto(BikeRack bikeRack) {
