@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
+    public static final String QUEUE_NAME = "bikeRackQueue";
+
     @Bean
     public Queue queue() {
-        return new Queue("bikeRackQueue", false);
+        return new Queue(QUEUE_NAME, false);
     }
 
     @Bean

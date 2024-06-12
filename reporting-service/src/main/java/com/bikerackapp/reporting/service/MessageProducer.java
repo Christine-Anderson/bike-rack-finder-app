@@ -1,5 +1,6 @@
 package com.bikerackapp.reporting.service;
 
+import com.bikerackapp.reporting.config.RabbitMQConfig;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,6 @@ public class MessageProducer {
     }
 
     public void sendMessage(String message) {
-        rabbitTemplate.convertAndSend("bikeRackQueue", message);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, message);
     }
 }
