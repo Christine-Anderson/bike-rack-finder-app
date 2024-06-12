@@ -21,11 +21,13 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final ReportAggregationService reportAggregationService;
+    private final MessageProducer messageProducer;
 
     @Autowired
-    public ReportService(ReportRepository reportRepository, ReportAggregationService reportAggregationService) {
+    public ReportService(ReportRepository reportRepository, ReportAggregationService reportAggregationService, MessageProducer messageProducer) {
         this.reportRepository = reportRepository;
         this.reportAggregationService = reportAggregationService;
+        this.messageProducer = messageProducer;
     }
 
     public ReportResponseDTO createReport(ReportRequestDTO newReport) {
@@ -36,6 +38,7 @@ public class ReportService {
                 newReport.userId()
         );
         reportRepository.save(report);
+        messageProducer.sendMessage("This is a test");
         LOGGER.info("Successfully created report with ID: {}", report.getReportId());
         this.updateReportAggregation(report);
         return convertToDto(report);
@@ -55,8 +58,8 @@ public class ReportService {
     }
 
     public ReportResponseDTO updateReport(UUID reportId, ReportResponseDTO reportRequestDTO) {
-       Report report = reportRepository.findById(reportId)
-               .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + reportId + " not found"));
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + reportId + " not found"));
         report.setRackId(reportRequestDTO.rackId());
         report.setReportType(reportRequestDTO.reportType());
         report.setDetails(reportRequestDTO.details());
