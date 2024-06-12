@@ -2,14 +2,15 @@ package com.bikerackapp.reporting.DTO;
 
 import com.bikerackapp.reporting.model.Report;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 public record ReportResponseDTO(
-        UUID reportId,
-        UUID rackId,
+        String reportId,
+        String rackId,
         Report.ReportType reportType,
         String details,
-        UUID userId,
-        Instant createdAt
+        String userId,
+        LocalDateTime createdAt,
+        Double latitude,
+        Double longitude
 ) {}
