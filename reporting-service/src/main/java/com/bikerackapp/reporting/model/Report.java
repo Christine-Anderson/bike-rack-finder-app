@@ -117,10 +117,6 @@ public class Report {
         this.details = details;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
