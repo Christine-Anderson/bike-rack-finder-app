@@ -80,10 +80,6 @@ public class BikeRack {
         this.rating = rating;
     }
 
-    public void setNumRatings(int numRatings) {
-        this.numRatings = numRatings;
-    }
-
     public void setTheftsInLastMonth(int theftsInLastMonth) {
         this.theftsInLastMonth = theftsInLastMonth;
     }
