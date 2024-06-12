@@ -1,7 +1,10 @@
 package com.bikerackapp.reporting.service;
 
+import com.bikerackapp.reporting.controller.ReportController;
 import com.bikerackapp.reporting.model.Report;
 import com.bikerackapp.reporting.repository.ReportRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,6 +14,8 @@ import java.util.List;
 public class ReportAggregationService {
     private static final int NUM_BIKE_RACK_CHANGE_REPORTS = 3;
     private static final int NUM_MONTHS = 1;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportController.class);
 
     private final ReportRepository reportRepository;
     private final MessageProducer messageProducer;
@@ -28,9 +33,14 @@ public class ReportAggregationService {
                 Report.ReportType.THEFT,
                 prevMonth, now
         );
-        int theftsInLastMonth = theftReports.size();
-        String message = "THEFT, " + bikeRackId + "," + theftsInLastMonth;
+        String message = "{ " +
+                "\"reportType\": \"THEFT\", " +
+                "\"bikeRackId\": " + "\"" + bikeRackId + "\"" + "," +
+                "\"theftsInLastMonth\": " + "\"" + theftReports.size() + "\"" +
+                " }";
         messageProducer.sendMessage(message);
+        LOGGER.info("Sent message to Bike Rack Service: {}", message);
+        System.out.println("Sent message to Bike Rack Service: " + message);
         return message;
     }
 
@@ -53,11 +63,14 @@ public class ReportAggregationService {
                 latitude - deltaDistLat, latitude + deltaDistLat,
                 longitude - deltaDistLong, longitude + deltaDistLong
         );
-        System.out.println("bikeRackChangeReports: " + bikeRackChangeReports);
-        String message = "NEW_RACK, " + latitude + "," + longitude;
+        String message = "{ " +
+                "\"reportType\": \"NEW_RACK\", " +
+                "\"latitude\": " + "\"" + latitude + "\"" + "," +
+                "\"longitude\": " + "\"" + longitude + "\"" +
+                " }";
         if (bikeRackChangeReports.size() >= NUM_BIKE_RACK_CHANGE_REPORTS) {
             messageProducer.sendMessage(message);
-            System.out.println(message);
+            LOGGER.info("Sent message to Bike Rack Service: {}", message);
         }
         return message;
     }
@@ -68,9 +81,13 @@ public class ReportAggregationService {
         List<Report> bikeRackChangeReports = reportRepository.findByRackIdAndReportTypeWithinDateRange(
                 bikeRackId, Report.ReportType.REMOVED_RACK, prevMonth, now
         );
-        String message = "REMOVED_RACK, " + bikeRackId;
+        String message = "{" +
+                "\"reportType\": \"REMOVED_RACK\"," +
+                "\"bikeRackId\": " + "\"" + bikeRackId + "\"" +
+                " }";
         if (bikeRackChangeReports.size() >= NUM_BIKE_RACK_CHANGE_REPORTS) {
             messageProducer.sendMessage(message);
+            LOGGER.info("Sent message to Bike Rack Service: {}", message);
         }
         return message;
     }
