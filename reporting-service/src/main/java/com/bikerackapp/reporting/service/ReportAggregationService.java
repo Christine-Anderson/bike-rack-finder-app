@@ -31,30 +31,34 @@ public class ReportAggregationService {
         int theftsInLastMonth = theftReports.size();
         String message = "THEFT, " + bikeRackId + "," + theftsInLastMonth;
         messageProducer.sendMessage(message);
-        System.out.println(message);
         return message;
     }
 
-    public String addBikeRack(String bikeRackId) { // todo debug
-        double deltaDistLat = 0.00001;
-        double deltaDistLong = 0.0001;
+    public String addBikeRack(String reportId) {
+        Double deltaDistLat = 0.00001;
+        Double deltaDistLong = 0.0001;
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime prevMonth = now.minusMonths(NUM_MONTHS);
-        Report newRackReport = reportRepository.findByRackId(bikeRackId).get(0);
-        double latitude = newRackReport.getLatitude();
-        double longitude = newRackReport.getLongitude();
+        Report newRackReport = reportRepository.findByReportId(reportId).getFirst();
+        Double latitude = newRackReport.getLatitude();
+        Double longitude = newRackReport.getLongitude();
+
+        if (latitude == null || longitude == null) {
+            throw new IllegalArgumentException("Latitude and Longitude must not be null for NEW_RACK reports");
+        }
+
         List<Report> bikeRackChangeReports = reportRepository.findByLatLongAndReportTypeWithinDateRange(
                 Report.ReportType.NEW_RACK,
                 prevMonth, now,
-                latitude + deltaDistLat, latitude - deltaDistLat,
-                longitude + deltaDistLong, longitude - deltaDistLong
+                latitude - deltaDistLat, latitude + deltaDistLat,
+                longitude - deltaDistLong, longitude + deltaDistLong
         );
-        System.out.println(bikeRackChangeReports);
-        String message = "NEW_RACK, " + bikeRackId + ",";
+        System.out.println("bikeRackChangeReports: " + bikeRackChangeReports);
+        String message = "NEW_RACK, " + latitude + "," + longitude;
         if (bikeRackChangeReports.size() >= NUM_BIKE_RACK_CHANGE_REPORTS) {
             messageProducer.sendMessage(message);
+            System.out.println(message);
         }
-        System.out.println(message);
         return message;
     }
 
@@ -68,7 +72,6 @@ public class ReportAggregationService {
         if (bikeRackChangeReports.size() >= NUM_BIKE_RACK_CHANGE_REPORTS) {
             messageProducer.sendMessage(message);
         }
-        System.out.println(message);
         return message;
     }
 }

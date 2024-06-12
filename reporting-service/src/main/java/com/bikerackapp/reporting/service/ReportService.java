@@ -42,7 +42,7 @@ public class ReportService {
 
         reportRepository.save(report);
         LOGGER.info("Successfully created report with ID: {}", report.getReportId());
-        this.updateReportAggregation(report.getReportType(), report.getRackId());
+        this.updateReportAggregation(report);
         return convertToDto(report);
     }
 
@@ -67,7 +67,7 @@ public class ReportService {
         report.setDetails(reportRequestDTO.details());
         reportRepository.save(report);
         LOGGER.info("Successfully updated report with ID: {}", reportId);
-        this.updateReportAggregation(report.getReportType(), report.getRackId());
+        this.updateReportAggregation(report);
         return convertToDto(report);
     }
 
@@ -76,7 +76,7 @@ public class ReportService {
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + reportId + " not found"));
         reportRepository.deleteById(reportId);
         LOGGER.info("Successfully deleted report with ID: {}", reportId);
-        this.updateReportAggregation(report.getReportType(), report.getRackId());
+        this.updateReportAggregation(report);
         return true;
     }
 
@@ -93,16 +93,16 @@ public class ReportService {
         );
     }
 
-    private void updateReportAggregation(Report.ReportType reportType, String bikeRackId) {
-        switch (reportType) {
+    private void updateReportAggregation(Report report) {
+        switch (report.getReportType()) {
             case THEFT:
-                reportAggregationService.calculateRecentThefts(bikeRackId);
+                reportAggregationService.calculateRecentThefts(report.getRackId());
                 break;
             case NEW_RACK:
-                reportAggregationService.addBikeRack(bikeRackId);
+                reportAggregationService.addBikeRack(report.getReportId());
                 break;
             case REMOVED_RACK:
-                reportAggregationService.removeBikeRack(bikeRackId);
+                reportAggregationService.removeBikeRack(report.getRackId());
                 break;
         }
     }

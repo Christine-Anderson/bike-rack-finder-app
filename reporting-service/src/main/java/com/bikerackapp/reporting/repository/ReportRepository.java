@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ReportRepository extends MongoRepository<Report, String> {
 
+    List<Report> findByReportId(String reportId);
+
     List<Report> findByRackId(String rackId);
 
     @Query("{'rackId': ?0, 'reportType': ?1, 'createdAt':  { $gte: ?2, $lte:  ?3 }}")
