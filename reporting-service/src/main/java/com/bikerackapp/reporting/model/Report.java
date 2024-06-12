@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Document(value="report")
@@ -16,10 +16,10 @@ public class Report {
     }
 
     @Id
-    private UUID reportId;
+    private String reportId;
 
     @Field("rackId")
-    private UUID rackId;
+    private String rackId;
 
     @Field("reportType")
     private ReportType reportType;
@@ -28,37 +28,56 @@ public class Report {
     private String details;
 
     @Field("userId")
-    private UUID userId;
+    private String userId;
 
     @Field("createdAt")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
+
+    @Field("latitude")
+    private Double latitude;
+
+    @Field("longitude")
+    private Double longitude;
 
     public Report() {
     }
 
-    public Report(UUID rackId, ReportType reportType, String details, UUID userId) {
-        reportId = UUID.randomUUID();
+    public Report(String rackId, ReportType reportType, String details, String userId) {
+        reportId = UUID.randomUUID().toString();
         this.rackId = rackId;
         this.reportType = reportType;
         this.details = details;
         this.userId = userId;
-        this.createdAt = Instant.now();
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Report(UUID reportId, UUID rackId, ReportType reportType, String details, UUID userId, Instant createdAt) {
+    public Report(String rackId, ReportType reportType, String details, String userId, Double latitude, Double longitude) {
+        reportId = UUID.randomUUID().toString();
+        this.rackId = rackId;
+        this.reportType = reportType;
+        this.details = details;
+        this.userId = userId;
+        this.createdAt = LocalDateTime.now();
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Report(String reportId, String rackId, ReportType reportType, String details, String userId, LocalDateTime createdAt, Double latitude, Double longitude) {
         this.reportId = reportId;
         this.rackId = rackId;
         this.reportType = reportType;
         this.details = details;
         this.userId = userId;
         this.createdAt = createdAt;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public UUID getReportId() {
+    public String getReportId() {
         return reportId;
     }
 
-    public UUID getRackId() {
+    public String getRackId() {
         return rackId;
     }
 
@@ -70,15 +89,23 @@ public class Report {
         return details;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public Instant getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setRackId(UUID rackId) {
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setRackId(String rackId) {
         this.rackId = rackId;
     }
 
@@ -90,7 +117,15 @@ public class Report {
         this.details = details;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

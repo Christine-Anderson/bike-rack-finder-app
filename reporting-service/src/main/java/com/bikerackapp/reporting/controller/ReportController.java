@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/report")
@@ -37,19 +36,19 @@ public class ReportController {
     }
 
     @GetMapping("/{reportId}")
-    public ResponseEntity<ReportResponseDTO> getReportById(@PathVariable("reportId") UUID reportId) {
+    public ResponseEntity<ReportResponseDTO> getReportById(@PathVariable("reportId") String reportId) {
         ReportResponseDTO report = reportService.getReportById(reportId);
         return ResponseEntity.ok(report);
     }
 
     @PutMapping("/{reportId}")
-    public ResponseEntity<ReportResponseDTO> updateReport(@PathVariable("reportId") UUID reportId, @RequestBody ReportResponseDTO reportToUpdate) {
+    public ResponseEntity<ReportResponseDTO> updateReport(@PathVariable("reportId") String reportId, @RequestBody ReportResponseDTO reportToUpdate) {
         ReportResponseDTO updatedReport = reportService.updateReport(reportId, reportToUpdate);
         return ResponseEntity.ok(updatedReport);
     }
 
     @DeleteMapping("/{reportId}")
-    public ResponseEntity<Void> deleteReport(@PathVariable("reportId") UUID reportId) {
+    public ResponseEntity<Void> deleteReport(@PathVariable("reportId") String reportId) {
         reportService.deleteReport(reportId);
         return ResponseEntity.noContent().build();
     }

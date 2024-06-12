@@ -6,36 +6,69 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ReportAggregationService {
     private static final int NUM_BIKE_RACK_CHANGE_REPORTS = 3;
+    private static final int NUM_MONTHS = 1;
 
     private final ReportRepository reportRepository;
+    private final MessageProducer messageProducer;
 
-    public ReportAggregationService(ReportRepository reportRepository) {
+    public ReportAggregationService(ReportRepository reportRepository, MessageProducer messageProducer) {
         this.reportRepository = reportRepository;
+        this.messageProducer = messageProducer;
     }
 
-    public int calculateRecentThefts(UUID rackId) { // todo tests after this is sorted out
+    public String calculateRecentThefts(String bikeRackId) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime prevMonth = now.minusMonths(1);
-        List<Report> theftReports = reportRepository.findByRackIdAndReportTypeWithinDateRange(rackId.toString(), Report.ReportType.THEFT, prevMonth, now);
+        LocalDateTime prevMonth = now.minusMonths(NUM_MONTHS);
+        List<Report> theftReports = reportRepository.findByRackIdAndReportTypeWithinDateRange(
+                bikeRackId,
+                Report.ReportType.THEFT,
+                prevMonth, now
+        );
         int theftsInLastMonth = theftReports.size();
-        // todo figure out how to send updated value to bike rack service
-        return theftsInLastMonth;
+        String message = "THEFT, " + bikeRackId + "," + theftsInLastMonth;
+        messageProducer.sendMessage(message);
+        System.out.println(message);
+        return message;
     }
 
-    public void updateAvailableBikeRacks(UUID rackId, Report.ReportType reportType) {
+    public String addBikeRack(String bikeRackId) { // todo debug
+        double deltaDistLat = 0.00001;
+        double deltaDistLong = 0.0001;
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime prevMonth = now.minusMonths(1);
-        List<Report> bikeRackChangeReports = reportRepository.findByRackIdAndReportTypeWithinDateRange(rackId.toString(), reportType, prevMonth, now);
-
-        if (reportType == Report.ReportType.NEW_RACK && bikeRackChangeReports.size() >= NUM_BIKE_RACK_CHANGE_REPORTS) {
-            // todo add rack to bike rack service
-        } else if (reportType == Report.ReportType.REMOVED_RACK && bikeRackChangeReports.size() >= NUM_BIKE_RACK_CHANGE_REPORTS) {
-            // todo remove rack from bike rack service
+        LocalDateTime prevMonth = now.minusMonths(NUM_MONTHS);
+        Report newRackReport = reportRepository.findByRackId(bikeRackId).get(0);
+        double latitude = newRackReport.getLatitude();
+        double longitude = newRackReport.getLongitude();
+        List<Report> bikeRackChangeReports = reportRepository.findByLatLongAndReportTypeWithinDateRange(
+                Report.ReportType.NEW_RACK,
+                prevMonth, now,
+                latitude + deltaDistLat, latitude - deltaDistLat,
+                longitude + deltaDistLong, longitude - deltaDistLong
+        );
+        System.out.println(bikeRackChangeReports);
+        String message = "NEW_RACK, " + bikeRackId + ",";
+        if (bikeRackChangeReports.size() >= NUM_BIKE_RACK_CHANGE_REPORTS) {
+            messageProducer.sendMessage(message);
         }
+        System.out.println(message);
+        return message;
+    }
+
+    public String removeBikeRack(String bikeRackId) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime prevMonth = now.minusMonths(NUM_MONTHS);
+        List<Report> bikeRackChangeReports = reportRepository.findByRackIdAndReportTypeWithinDateRange(
+                bikeRackId, Report.ReportType.REMOVED_RACK, prevMonth, now
+        );
+        String message = "REMOVED_RACK, " + bikeRackId;
+        if (bikeRackChangeReports.size() >= NUM_BIKE_RACK_CHANGE_REPORTS) {
+            messageProducer.sendMessage(message);
+        }
+        System.out.println(message);
+        return message;
     }
 }

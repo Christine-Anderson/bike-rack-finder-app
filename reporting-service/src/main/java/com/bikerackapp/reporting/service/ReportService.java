@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,13 +20,11 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final ReportAggregationService reportAggregationService;
-    private final MessageProducer messageProducer;
 
     @Autowired
-    public ReportService(ReportRepository reportRepository, ReportAggregationService reportAggregationService, MessageProducer messageProducer) {
+    public ReportService(ReportRepository reportRepository, ReportAggregationService reportAggregationService) {
         this.reportRepository = reportRepository;
         this.reportAggregationService = reportAggregationService;
-        this.messageProducer = messageProducer;
     }
 
     public ReportResponseDTO createReport(ReportRequestDTO newReport) {
@@ -37,10 +34,15 @@ public class ReportService {
                 newReport.details(),
                 newReport.userId()
         );
+
+        if (newReport.reportType() == Report.ReportType.NEW_RACK) {
+            report.setLatitude(newReport.latitude());
+            report.setLongitude(newReport.longitude());
+        }
+
         reportRepository.save(report);
-        messageProducer.sendMessage("This is a test");
         LOGGER.info("Successfully created report with ID: {}", report.getReportId());
-        this.updateReportAggregation(report);
+        this.updateReportAggregation(report.getReportType(), report.getRackId());
         return convertToDto(report);
     }
 
@@ -51,31 +53,30 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
-    public ReportResponseDTO getReportById(UUID reportId) {
+    public ReportResponseDTO getReportById(String reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + reportId + " not found"));
         return convertToDto(report);
     }
 
-    public ReportResponseDTO updateReport(UUID reportId, ReportResponseDTO reportRequestDTO) {
+    public ReportResponseDTO updateReport(String reportId, ReportResponseDTO reportRequestDTO) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + reportId + " not found"));
         report.setRackId(reportRequestDTO.rackId());
         report.setReportType(reportRequestDTO.reportType());
         report.setDetails(reportRequestDTO.details());
-        report.setCreatedAt(reportRequestDTO.createdAt());
         reportRepository.save(report);
         LOGGER.info("Successfully updated report with ID: {}", reportId);
-        this.updateReportAggregation(report);
+        this.updateReportAggregation(report.getReportType(), report.getRackId());
         return convertToDto(report);
     }
 
-    public boolean deleteReport(UUID reportId) {
+    public boolean deleteReport(String reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + reportId + " not found"));
         reportRepository.deleteById(reportId);
         LOGGER.info("Successfully deleted report with ID: {}", reportId);
-        this.updateReportAggregation(report);
+        this.updateReportAggregation(report.getReportType(), report.getRackId());
         return true;
     }
 
@@ -86,15 +87,23 @@ public class ReportService {
                 report.getReportType(),
                 report.getDetails(),
                 report.getUserId(),
-                report.getCreatedAt()
+                report.getCreatedAt(),
+                report.getLatitude(),
+                report.getLongitude()
         );
     }
 
-    private void updateReportAggregation(Report report) {
-        if (report.getReportType() == Report.ReportType.THEFT) {
-            reportAggregationService.calculateRecentThefts(report.getRackId());
-        } else {
-            reportAggregationService.updateAvailableBikeRacks(report.getRackId(), report.getReportType());
+    private void updateReportAggregation(Report.ReportType reportType, String bikeRackId) {
+        switch (reportType) {
+            case THEFT:
+                reportAggregationService.calculateRecentThefts(bikeRackId);
+                break;
+            case NEW_RACK:
+                reportAggregationService.addBikeRack(bikeRackId);
+                break;
+            case REMOVED_RACK:
+                reportAggregationService.removeBikeRack(bikeRackId);
+                break;
         }
     }
 }
