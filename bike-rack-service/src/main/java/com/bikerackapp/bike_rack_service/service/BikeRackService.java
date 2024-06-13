@@ -53,14 +53,14 @@ public class BikeRackService {
     @Cacheable(value = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO getBikeRackById(UUID bikeRackId) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
-                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bike rack with ID " + bikeRackId + " not found"));
         return convertToDto(bikeRack);
     }
 
     @CachePut(cacheNames = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO updateBikeRack(UUID bikeRackId, UpdateBikeRackRequestDTO bikeRackRequestDTO) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
-                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bike rack with ID " + bikeRackId + " not found"));
         bikeRack.setLatitude(bikeRackRequestDTO.latitude());
         bikeRack.setLongitude(bikeRackRequestDTO.longitude());
         bikeRack.setRating(bikeRackRequestDTO.rating());
@@ -73,7 +73,7 @@ public class BikeRackService {
     @CachePut(cacheNames = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO updateRating(UUID bikeRackId, double newRating) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
-                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bike rack with ID " + bikeRackId + " not found"));
         int numRatings = bikeRack.getNumRatings();
         double totalRating = (bikeRack.getRating() * (double) numRatings);
         bikeRack.setRating((totalRating + newRating) / (double) (numRatings + 1));
@@ -85,7 +85,7 @@ public class BikeRackService {
     @CacheEvict(cacheNames = "bikeRacks", key = "#bikeRackId")
     public boolean deleteBikeRack(UUID bikeRackId) {
         bikeRackRepository.findById(bikeRackId)
-                .orElseThrow(() -> new ResourceNotFoundException("Report with ID " + bikeRackId + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bike rack with ID " + bikeRackId + " not found"));
         bikeRackRepository.deleteById(bikeRackId);
         LOGGER.info("Successfully deleted bikeRack with ID: {}", bikeRackId);
         return true;
@@ -93,7 +93,6 @@ public class BikeRackService {
 
     public void processMessage(String message) {
         LOGGER.info("Successfully received message from Reporting Service: {}", message);
-        System.out.println("Successfully received message from Reporting Service: " + message);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
