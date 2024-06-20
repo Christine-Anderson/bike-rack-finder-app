@@ -81,7 +81,7 @@ public class ReportAggregationService {
         List<Report> bikeRackChangeReports = reportRepository.findByRackIdAndReportTypeWithinDateRange(
                 bikeRackId, Report.ReportType.REMOVED_RACK, prevMonth, now
         );
-        String message = "{" +
+        String message = "{ " +
                 "\"reportType\": \"REMOVED_RACK\"," +
                 "\"bikeRackId\": " + "\"" + bikeRackId + "\"" +
                 " }";
