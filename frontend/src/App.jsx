@@ -1,10 +1,16 @@
 import { createRoot } from "react-dom/client";
+import { ChakraProvider } from '@chakra-ui/react'
+import Header from "./components/Header";
+import Content from "./components/Content";
 
 const App = () => {
     return (
-        <div>
-            <h1>Hello World</h1>
-        </div>
+        <ChakraProvider>
+            <div>
+                <Header />
+                <Content />
+            </div>
+        </ChakraProvider>
     );
 };
 
