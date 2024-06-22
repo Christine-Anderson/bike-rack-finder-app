@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardBody, CardFooter, Text, Button, Heading, Flex } from "@chakra-ui/react";
 import StarRating from "./StarRating";
+import ReportModal from "./ReportModal";
 
 const BikeRackCard = () => {
     return (
@@ -11,16 +12,29 @@ const BikeRackCard = () => {
                 <Flex direction="column" gap={4}>
                     <Flex justify="space-between" align="center" width="100%">
                         <Text size="sm" mr={10}>Thefts: 5</Text>
-                        <Button size="sm">Report Theft</Button>
+                        <ReportModal
+                            buttonText="Report Theft"
+                            buttonSize={"sm"}
+                            buttonRight={"auto"}
+                            headerText="Report Theft"
+                            bodyText="Are you sure you want to report theft at 123 Fake Street, City?"
+                        />
                     </Flex>
                     <Flex justify="space-between" align="center" width="100%">
                         <StarRating rating={3.5}/>
                         <Button size="sm">Rate</Button>
+                        {/* todo how to rate */}
                     </Flex>
                 </Flex>
             </CardBody>
             <CardFooter>
-                <Button size="sm">Report Removal</Button>
+                        <ReportModal
+                            buttonText="Report Removal"
+                            buttonSize={"sm"}
+                            buttonRight={"auto"}
+                            headerText="Report Removal"
+                            bodyText="Are you sure you want to report removal at 123 Fake Street, City?"
+                        />
             </CardFooter>
         </Card>
     );
