@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Flex, Heading, Spacer, Link } from '@chakra-ui/react';
+import React, { useState } from "react";
+import { Flex, Heading, Spacer, Link } from "@chakra-ui/react";
 
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
