@@ -1,6 +1,7 @@
-import { Card, CardHeader, CardBody, CardFooter, Text, Button, Heading, Flex } from "@chakra-ui/react";
+import { Card, CardHeader, CardBody, CardFooter, Text, Heading, Flex } from "@chakra-ui/react";
 import StarRating from "./StarRating";
 import ReportModal from "./ReportModal";
+import RatingModal from "./RatingModal";
 
 const BikeRackCard = () => {
     return (
@@ -22,8 +23,7 @@ const BikeRackCard = () => {
                     </Flex>
                     <Flex justify="space-between" align="center" width="100%">
                         <StarRating rating={3.5}/>
-                        <Button size="sm">Rate</Button>
-                        {/* todo how to rate */}
+                        <RatingModal/>
                     </Flex>
                 </Flex>
             </CardBody>

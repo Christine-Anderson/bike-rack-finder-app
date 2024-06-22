@@ -1,5 +1,6 @@
 import React from "react";
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Text, FormControl, FormLabel, Textarea } from "@chakra-ui/react";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
+import { Button, Text, FormControl, FormLabel, Textarea } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
 const ReportModal = ({ buttonText, buttonSize, buttonRight, headerText, bodyText }) => {
