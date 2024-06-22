@@ -3,7 +3,7 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody,
 import { Button, Text, FormControl, FormLabel, Textarea } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
-const ReportModal = ({ buttonText, buttonSize, buttonRight, headerText, bodyText }) => {
+const ReportModal = ({ reportType, address, buttonSize, buttonRight }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     let [value, setValue] = React.useState("")
@@ -15,16 +15,22 @@ const ReportModal = ({ buttonText, buttonSize, buttonRight, headerText, bodyText
 
     return (
         <>
-            <Button size={buttonSize} right={buttonRight} onClick={onOpen}>{buttonText}</Button>
+            <Button size={buttonSize} right={buttonRight} onClick={onOpen}>
+                {`Report ${reportType}`}
+            </Button>
 
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>{headerText}</ModalHeader>
+                    <ModalHeader>
+                        {`Report ${reportType}`}
+                    </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         <FormControl>
-                            <Text align="center" mb={6}>{bodyText}</Text>
+                            <Text align="center" mb={6}>
+                                {`Are you sure you want to report ${reportType.toLowerCase()} at ${address}?`}
+                            </Text>
                             <FormLabel>Details</FormLabel>
                             <Textarea
                                 value={value}
