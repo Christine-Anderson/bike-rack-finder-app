@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Flex, Container, VStack, Divider, Text, Button, Input, IconButton } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import BikeRackCard from "./BikeRackCard";
@@ -5,14 +6,20 @@ import BikeRackMap from "./BikeRackMap";
 import ReportModal from "./ReportModal";
 
 const mockBikeRacks = [
-    { poi: {key: '123 Fake Street, City', location: { lat: 49.2827, lng: -123.1207 }}, numThefts: 5, rating: 3.5},
-    { poi: {key: '123 Fake Street, City', location: { lat: 49.3043, lng: -123.1443 }}, numThefts: 5, rating: 3.5},
-    { poi: {key: '123 Fake Street, City', location: { lat: 49.2713, lng: -123.1340 }}, numThefts: 5, rating: 3.5},
-    { poi: {key: '123 Fake Street, City', location: { lat: 49.2606, lng: -123.2460 }}, numThefts: 5, rating: 3.5},
-    { poi: {key: '123 Fake Street, City', location: { lat: 49.2886, lng: -123.1112 }}, numThefts: 5, rating: 3.5},
+    { poi: {key: 1, location: { lat: 49.2827, lng: -123.1207 }}, address: "Vancouver Art Gallery", numThefts: 5, rating: 3.5},
+    { poi: {key: 2, location: { lat: 49.3043, lng: -123.1443 }}, address: "Stanley Park", numThefts: 5, rating: 3.5},
+    { poi: {key: 3, location: { lat: 49.2713, lng: -123.1340 }}, address: "Granville Island", numThefts: 5, rating: 3.5},
+    { poi: {key: 4, location: { lat: 49.2606, lng: -123.2460 }}, address: "UBC", numThefts: 5, rating: 3.5},
+    { poi: {key: 5, location: { lat: 49.2886, lng: -123.1112 }}, address: "Canada Place", numThefts: 5, rating: 3.5},
 ];
 
 const Content = () => {
+    const [visibleMarkers, setVisibleMarkers] = useState([]);
+
+    const handleMapBoundsChange = (visibleMarkers) => {
+        setVisibleMarkers(visibleMarkers);
+    };
+    
     return (
         <Container height="calc(100vh - 8rem)" maxW="80vw" padding="4" mt={5} mb={5}>
             <Flex direction="column" height="100%">
@@ -22,21 +29,17 @@ const Content = () => {
                         <Divider />
                         <VStack spacing={4} p={4} w="20rem" overflowY="auto" borderRight="1px solid #E2E8F0">
                             
-                            <BikeRackCard
-                                address={mockBikeRacks[0].poi.key}
-                                numThefts={mockBikeRacks[0].numThefts}
-                                rating={mockBikeRacks[0].rating}
-                            />
-                            <BikeRackCard
-                                address={mockBikeRacks[1].poi.key}
-                                numThefts={mockBikeRacks[1].numThefts}
-                                rating={mockBikeRacks[1].rating}
-                            />
-                            <BikeRackCard
-                                address={mockBikeRacks[2].poi.key}
-                                numThefts={mockBikeRacks[2].numThefts}
-                                rating={mockBikeRacks[2].rating}
-                            />
+                            { mockBikeRacks
+                                .filter(({ poi }) => visibleMarkers.some(marker => marker.poi.key === poi.key))
+                                .map(({poi, address, numThefts, rating}) => (
+                                    <BikeRackCard
+                                        key={poi.key}
+                                        address={address}
+                                        numThefts={numThefts}
+                                        rating={rating}
+                                    />
+                                ))
+                            }
 
                         </VStack>
                     </Flex>
@@ -52,7 +55,10 @@ const Content = () => {
                             />
                         </Flex>
 
-                        <BikeRackMap mockBikeRacks={mockBikeRacks}></BikeRackMap>
+                        <BikeRackMap
+                            mockBikeRacks={mockBikeRacks}
+                            onMapBoundsChange={handleMapBoundsChange}
+                        />
 
                         <Flex alignItems="center" justifyContent="space-between" mt={2}>
                             <Button colorScheme="blue" left="50%" transform="translateX(-50%)">Find Closest Rack</Button>
