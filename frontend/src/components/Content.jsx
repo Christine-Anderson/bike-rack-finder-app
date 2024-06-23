@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Flex, Container, VStack, Divider, Text, Button, Input, IconButton } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import { Flex, Container, VStack, Divider, Text, Button, useToast } from "@chakra-ui/react";
 import BikeRackCard from "./BikeRackCard";
 import BikeRackMap from "./BikeRackMap";
 import ReportModal from "./ReportModal";
+import SearchBar from './SearchBar';
 
 const mockBikeRacks = [
     { poi: {key: 1, location: { lat: 49.2827, lng: -123.1207 }}, address: "Vancouver Art Gallery", numThefts: 5, rating: 3.5},
@@ -13,12 +13,39 @@ const mockBikeRacks = [
     { poi: {key: 5, location: { lat: 49.2886, lng: -123.1112 }}, address: "Canada Place", numThefts: 5, rating: 3.5},
 ];
 
+const defaultCoordinates = {
+    lat: 49.2827,
+    lng: -123.1207
+};
+
 const Content = () => {
     const [visibleMarkers, setVisibleMarkers] = useState([]);
     const [clickedMarkerCoordinates, setClickedMarkerCoordinates] = useState(null);
+    const [searchValue, setSearchValue] = useState('');
+    const [center, setCenter] = useState(defaultCoordinates);
+
+    const toast = useToast();
 
     const handleMapBoundsChange = (visibleMarkers) => {
         setVisibleMarkers(visibleMarkers);
+    };
+
+    const handleSearch = () => {
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ address: searchValue }, (results, status) => {
+            if (status === 'OK' && results && results[0]) {
+                const location = results[0].geometry.location;
+                setCenter({ lat: location.lat(), lng: location.lng() });
+            } else {
+                toast({
+                    title: "Invalid Address",
+                    description: "Please enter a valid address.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
+        });
     };
 
     const onMapClick = (e) => {
@@ -50,18 +77,15 @@ const Content = () => {
                     </Flex>
 
                     <Flex direction="column" flex="1">
-                        {/* Search Bar */}
-                        <Flex alignItems="center" justifyContent="center" m={3}>
-                            <Input placeholder="Search..." variant="filled" size="md" mr={3} />
-                            <IconButton
-                                colorScheme="blue"
-                                aria-label="Search database"
-                                icon={<SearchIcon />}
-                            />
-                        </Flex>
+                        <SearchBar
+                            searchValue={searchValue}
+                            setSearchValue={setSearchValue}
+                            handleSearch={handleSearch}
+                        />
 
                         <BikeRackMap
                             mockBikeRacks={mockBikeRacks}
+                            center={center}
                             onMapBoundsChange={handleMapBoundsChange}
                             clickedMarkerCoordinates={clickedMarkerCoordinates}
                             onMapClick={onMapClick}

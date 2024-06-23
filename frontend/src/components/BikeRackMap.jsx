@@ -2,12 +2,7 @@ import { Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
 const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
 
-const defaultCoordinates = {
-    lat: 49.2827,
-    lng: -123.1207
-};
-
-const BikeRackMap = ({ mockBikeRacks, onMapBoundsChange, clickedMarkerCoordinates, onMapClick }) => {
+const BikeRackMap = ({ mockBikeRacks, center, onMapBoundsChange, clickedMarkerCoordinates, onMapClick }) => {
     const handleCameraChanged = (ev) => {
         console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom);
         const bounds = ev.detail.bounds;
@@ -23,7 +18,7 @@ const BikeRackMap = ({ mockBikeRacks, onMapBoundsChange, clickedMarkerCoordinate
         <Map
             mapId={mapId}
             defaultZoom={13}
-            defaultCenter={ { lat: defaultCoordinates.lat, lng: defaultCoordinates.lng } }
+            center={center}
             onCameraChanged={handleCameraChanged}
             onClick={onMapClick}
         >
