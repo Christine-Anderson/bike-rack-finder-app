@@ -42,7 +42,8 @@ const ReportModal = ({ reportType, address, buttonSize, buttonRight }) => {
                 </ModalBody>
                     <ModalFooter>
                         <Button colorScheme="blue" mr={6}>Submit</Button>
-                        {/* todo <Button colorScheme="blue" mr={6} onClick={onClick}>Submit</Button> */}
+                        {/* todo <Button colorScheme="blue" mr={6} onClick={onClick}>Submit</Button> 
+                        todo figure out how to pass in the correct rack and then call the api*/}
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>

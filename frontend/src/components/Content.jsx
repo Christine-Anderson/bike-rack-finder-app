@@ -4,42 +4,38 @@ import BikeRackCard from "./BikeRackCard";
 import BikeRackMap from "./BikeRackMap";
 import ReportModal from "./ReportModal";
 
-const mockBikeRack = {
-    address: "123 Fake Street, City",
-    numThefts: 5,
-    rating: 3.5
-}; 
+const mockBikeRacks = [
+    { poi: {key: '123 Fake Street, City', location: { lat: 49.2827, lng: -123.1207 }}, numThefts: 5, rating: 3.5},
+    { poi: {key: '123 Fake Street, City', location: { lat: 49.3043, lng: -123.1443 }}, numThefts: 5, rating: 3.5},
+    { poi: {key: '123 Fake Street, City', location: { lat: 49.2713, lng: -123.1340 }}, numThefts: 5, rating: 3.5},
+    { poi: {key: '123 Fake Street, City', location: { lat: 49.2606, lng: -123.2460 }}, numThefts: 5, rating: 3.5},
+    { poi: {key: '123 Fake Street, City', location: { lat: 49.2886, lng: -123.1112 }}, numThefts: 5, rating: 3.5},
+];
 
 const Content = () => {
     return (
         <Container height="calc(100vh - 8rem)" maxW="80vw" padding="4" mt={5} mb={5}>
             <Flex direction="column" height="100%">
                 <Flex flex="1" direction={{ base: "column", md: "row" }} padding="4" overflowY="auto">
-                    {/* Cards */}
                     <Flex direction="column">
                         <Text textAlign="center" fontSize="xl" fontWeight="bold" mb={2}>Bike Racks</Text>
                         <Divider />
                         <VStack spacing={4} p={4} w="20rem" overflowY="auto" borderRight="1px solid #E2E8F0">
                             
                             <BikeRackCard
-                                address={mockBikeRack.address}
-                                numThefts={mockBikeRack.numThefts}
-                                rating={mockBikeRack.rating}
+                                address={mockBikeRacks[0].poi.key}
+                                numThefts={mockBikeRacks[0].numThefts}
+                                rating={mockBikeRacks[0].rating}
                             />
                             <BikeRackCard
-                                address={mockBikeRack.address}
-                                numThefts={mockBikeRack.numThefts}
-                                rating={mockBikeRack.rating}
+                                address={mockBikeRacks[1].poi.key}
+                                numThefts={mockBikeRacks[1].numThefts}
+                                rating={mockBikeRacks[1].rating}
                             />
                             <BikeRackCard
-                                address={mockBikeRack.address}
-                                numThefts={mockBikeRack.numThefts}
-                                rating={mockBikeRack.rating}
-                            />
-                            <BikeRackCard
-                                address={mockBikeRack.address}
-                                numThefts={mockBikeRack.numThefts}
-                                rating={mockBikeRack.rating}
+                                address={mockBikeRacks[2].poi.key}
+                                numThefts={mockBikeRacks[2].numThefts}
+                                rating={mockBikeRacks[2].rating}
                             />
 
                         </VStack>
@@ -56,16 +52,16 @@ const Content = () => {
                             />
                         </Flex>
 
+                        <BikeRackMap mockBikeRacks={mockBikeRacks}></BikeRackMap>
 
-                        <BikeRackMap></BikeRackMap>
-
-                        <Flex alignItems="center" justifyContent="space-between">
+                        <Flex alignItems="center" justifyContent="space-between" mt={2}>
                             <Button colorScheme="blue" left="50%" transform="translateX(-50%)">Find Closest Rack</Button>
                             <ReportModal
                                 reportType={"New Rack"}
-                                address={mockBikeRack.address}
+                                address={"test"}
                                 buttonSize={"md"}
                                 buttonRight={"0"}
+                                // todo figure out how to pass in the one that was clicked
                             />
                         </Flex>
                     </Flex>
