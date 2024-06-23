@@ -15,10 +15,15 @@ const mockBikeRacks = [
 
 const Content = () => {
     const [visibleMarkers, setVisibleMarkers] = useState([]);
+    const [clickedMarkerCoordinates, setClickedMarkerCoordinates] = useState(null);
 
     const handleMapBoundsChange = (visibleMarkers) => {
         setVisibleMarkers(visibleMarkers);
     };
+
+    const onMapClick = (e) => {
+        setClickedMarkerCoordinates({ lat: e.detail.latLng.lat, lng: e.detail.latLng.lng });
+    };    
     
     return (
         <Container height="calc(100vh - 8rem)" maxW="80vw" padding="4" mt={5} mb={5}>
@@ -58,6 +63,8 @@ const Content = () => {
                         <BikeRackMap
                             mockBikeRacks={mockBikeRacks}
                             onMapBoundsChange={handleMapBoundsChange}
+                            clickedMarkerCoordinates={clickedMarkerCoordinates}
+                            onMapClick={onMapClick}
                         />
 
                         <Flex alignItems="center" justifyContent="space-between" mt={2}>

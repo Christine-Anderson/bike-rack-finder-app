@@ -7,7 +7,7 @@ const defaultCoordinates = {
     lng: -123.1207
 };
 
-const BikeRackMap = ({ mockBikeRacks, onMapBoundsChange }) => {
+const BikeRackMap = ({ mockBikeRacks, onMapBoundsChange, clickedMarkerCoordinates, onMapClick }) => {
     const handleCameraChanged = (ev) => {
         console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom);
         const bounds = ev.detail.bounds;
@@ -25,6 +25,7 @@ const BikeRackMap = ({ mockBikeRacks, onMapBoundsChange }) => {
             defaultZoom={13}
             defaultCenter={ { lat: defaultCoordinates.lat, lng: defaultCoordinates.lng } }
             onCameraChanged={handleCameraChanged}
+            onClick={onMapClick}
         >
             {mockBikeRacks.map(({ poi }) => (
                 <AdvancedMarker
@@ -33,6 +34,14 @@ const BikeRackMap = ({ mockBikeRacks, onMapBoundsChange }) => {
                 <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} />
                 </AdvancedMarker>
             ))}
+
+            {clickedMarkerCoordinates && (
+                <AdvancedMarker
+                    position={clickedMarkerCoordinates}
+                >
+                    <Pin background={'#FF0000'} glyphColor={'#000'} borderColor={'#000'} />
+                </AdvancedMarker>
+            )}
         </Map>
     );  
 }
