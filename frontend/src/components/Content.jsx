@@ -1,6 +1,7 @@
 import { Flex, Container, VStack, Divider, Text, Button, Input, IconButton } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import BikeRackCard from "./BikeRackCard";
+import BikeRackMap from "./BikeRackMap";
 import ReportModal from "./ReportModal";
 
 const mockBikeRack = {
@@ -44,7 +45,6 @@ const Content = () => {
                         </VStack>
                     </Flex>
 
-                    {/* Google Maps */}
                     <Flex direction="column" flex="1">
                         {/* Search Bar */}
                         <Flex alignItems="center" justifyContent="center" m={3}>
@@ -56,10 +56,8 @@ const Content = () => {
                             />
                         </Flex>
 
-                        {/* Map */}
-                        <Flex flex="1" bg="green" mb={4}>
-                            Google Maps here
-                        </Flex>
+
+                        <BikeRackMap></BikeRackMap>
 
                         <Flex alignItems="center" justifyContent="space-between">
                             <Button colorScheme="blue" left="50%" transform="translateX(-50%)">Find Closest Rack</Button>
