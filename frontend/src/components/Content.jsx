@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Flex, Container, VStack, Divider, Text, Button, useToast } from "@chakra-ui/react";
+
 import BikeRackCard from "./BikeRackCard";
 import BikeRackMap from "./BikeRackMap";
 import ReportModal from "./ReportModal";
@@ -32,10 +33,19 @@ const Content = () => {
 
     const handleSearch = () => {
         const geocoder = new window.google.maps.Geocoder();
+
+        if (localStorage.getItem(searchValue)) {
+            const cachedResult = JSON.parse(localStorage.getItem(searchValue));
+            setCenter({ lat: cachedResult.lat, lng: cachedResult.lng });
+            return;
+        }
+
         geocoder.geocode({ address: searchValue }, (results, status) => {
             if (status === 'OK' && results && results[0]) {
                 const location = results[0].geometry.location;
                 setCenter({ lat: location.lat(), lng: location.lng() });
+
+                localStorage.setItem(searchValue, JSON.stringify({ lat: location.lat(), lng: location.lng() }));
             } else {
                 toast({
                     title: "Invalid Address",
