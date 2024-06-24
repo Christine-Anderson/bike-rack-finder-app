@@ -34,6 +34,7 @@ public class BikeRackService {
 
     public BikeRackResponseDTO createBikeRack(CreateBikeRackRequestDTO newBikeRack) {
         BikeRack bikeRack = new BikeRack(
+                newBikeRack.address(),
                 newBikeRack.latitude(),
                 newBikeRack.longitude()
         );
@@ -106,6 +107,7 @@ public class BikeRackService {
                 );
             } else if (reportType.equals("NEW_RACK")) {
                 BikeRack bikeRack = new BikeRack(
+                        rootNode.get("address").asText(),
                         rootNode.get("latitude").asDouble(),
                         rootNode.get("longitude").asDouble()
                 );
@@ -121,6 +123,7 @@ public class BikeRackService {
     private BikeRackResponseDTO convertToDto(BikeRack bikeRack) {
         return new BikeRackResponseDTO(
                 bikeRack.getRackId(),
+                bikeRack.getAddress(),
                 bikeRack.getLatitude(),
                 bikeRack.getLongitude(),
                 bikeRack.getRating(),

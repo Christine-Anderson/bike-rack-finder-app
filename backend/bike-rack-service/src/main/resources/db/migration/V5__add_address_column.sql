@@ -1,0 +1,1 @@
+ALTER TABLE bike_racks ADD COLUMN address VARCHAR(255);

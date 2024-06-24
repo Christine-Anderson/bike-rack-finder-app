@@ -14,6 +14,8 @@ public class BikeRack {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "rack_id")
     private UUID rackId;
+    @Column(name = "address", nullable = false)
+    private String address;
     @Column(name = "latitude", nullable = false)
     private double latitude;
     @Column(name = "longitude", nullable = false)
@@ -28,7 +30,8 @@ public class BikeRack {
     public BikeRack() {
     }
 
-    public BikeRack(double latitude, double longitude) {
+    public BikeRack(String address, double latitude, double longitude) {
+        this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.rating = 0;
@@ -36,7 +39,8 @@ public class BikeRack {
         this.theftsInLastMonth = 0;
     }
 
-    public BikeRack(UUID rackId, double latitude, double longitude, double rating, int numRatings, int theftsInLastMonth) {
+    public BikeRack(UUID rackId, String address, double latitude, double longitude, double rating, int numRatings, int theftsInLastMonth) {
+        this.address = address;
         this.rackId = rackId;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -46,6 +50,10 @@ public class BikeRack {
 
     public UUID getRackId() {
         return rackId;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public double getLatitude() {
@@ -66,6 +74,10 @@ public class BikeRack {
 
     public int getTheftsInLastMonth() {
         return theftsInLastMonth;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setLatitude(double latitude) {

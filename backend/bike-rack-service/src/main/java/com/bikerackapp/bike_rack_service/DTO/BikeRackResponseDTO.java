@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public record BikeRackResponseDTO (
         UUID rackId,
+        String address,
         double latitude,
         double longitude,
         double rating,
