@@ -88,6 +88,7 @@ public class ReportService {
                 report.getDetails(),
                 report.getUserId(),
                 report.getCreatedAt(),
+                report.getAddress(),
                 report.getLatitude(),
                 report.getLongitude()
         );

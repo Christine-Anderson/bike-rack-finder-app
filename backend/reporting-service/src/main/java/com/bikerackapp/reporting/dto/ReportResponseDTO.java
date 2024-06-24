@@ -11,6 +11,7 @@ public record ReportResponseDTO(
         String details,
         String userId,
         LocalDateTime createdAt,
+        String address,
         Double latitude,
         Double longitude
 ) {}

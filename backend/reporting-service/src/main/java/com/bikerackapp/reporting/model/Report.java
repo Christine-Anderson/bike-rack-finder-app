@@ -33,6 +33,9 @@ public class Report {
     @Field("createdAt")
     private LocalDateTime createdAt;
 
+    @Field("address")
+    private String address;
+
     @Field("latitude")
     private Double latitude;
 
@@ -51,24 +54,26 @@ public class Report {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Report(String rackId, ReportType reportType, String details, String userId, Double latitude, Double longitude) {
+    public Report(String rackId, ReportType reportType, String details, String userId, String address, Double latitude, Double longitude) {
         reportId = UUID.randomUUID().toString();
         this.rackId = rackId;
         this.reportType = reportType;
         this.details = details;
         this.userId = userId;
         this.createdAt = LocalDateTime.now();
+        this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public Report(String reportId, String rackId, ReportType reportType, String details, String userId, LocalDateTime createdAt, Double latitude, Double longitude) {
+    public Report(String reportId, String rackId, ReportType reportType, String details, String userId, LocalDateTime createdAt, String address, Double latitude, Double longitude) {
         this.reportId = reportId;
         this.rackId = rackId;
         this.reportType = reportType;
         this.details = details;
         this.userId = userId;
         this.createdAt = createdAt;
+        this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -97,6 +102,10 @@ public class Report {
         return createdAt;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
     public Double getLatitude() {
         return latitude;
     }
@@ -115,6 +124,10 @@ public class Report {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setLatitude(Double latitude) {

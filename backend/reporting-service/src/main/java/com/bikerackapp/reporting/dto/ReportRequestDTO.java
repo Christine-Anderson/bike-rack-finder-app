@@ -15,6 +15,9 @@ public record ReportRequestDTO(
         @NotNull(message = "User Id type is required")
         String userId,
 
+        @Size(max = 255, message = "Address length must at most 255 characters")
+        String address,
+
         @DecimalMin(value = "-90.0", message = "Latitude must be between -90 and 90")
         @DecimalMax(value = "90.0", message = "Latitude must be between -90 and 90")
         Double latitude,

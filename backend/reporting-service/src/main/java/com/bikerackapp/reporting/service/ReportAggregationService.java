@@ -50,11 +50,12 @@ public class ReportAggregationService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime prevMonth = now.minusMonths(NUM_MONTHS);
         Report newRackReport = reportRepository.findByReportId(reportId).getFirst();
+        String address = newRackReport.getAddress();
         Double latitude = newRackReport.getLatitude();
         Double longitude = newRackReport.getLongitude();
 
-        if (latitude == null || longitude == null) {
-            throw new IllegalArgumentException("Latitude and Longitude must not be null for NEW_RACK reports");
+        if (address == null || latitude == null || longitude == null) {
+            throw new IllegalArgumentException("Address, latitude, and longitude must not be null for NEW_RACK reports");
         }
 
         List<Report> bikeRackChangeReports = reportRepository.findByLatLongAndReportTypeWithinDateRange(
@@ -65,6 +66,7 @@ public class ReportAggregationService {
         );
         String message = "{ " +
                 "\"reportType\": \"NEW_RACK\", " +
+                "\"address\": " + "\"" + address + "\"" + "," +
                 "\"latitude\": " + "\"" + latitude + "\"" + "," +
                 "\"longitude\": " + "\"" + longitude + "\"" +
                 " }";
