@@ -50,7 +50,8 @@ const Content = () => {
 
     const onMapClick = (e) => {
         setClickedMarkerCoordinates({ lat: e.detail.latLng.lat, lng: e.detail.latLng.lng });
-    };    
+        setCenter(null);
+    };
     
     return (
         <Container height="calc(100vh - 8rem)" maxW="80vw" padding="4" mt={5} mb={5}>
