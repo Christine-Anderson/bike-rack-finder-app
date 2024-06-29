@@ -2,7 +2,7 @@ import { Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
 const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
 
-const BikeRackMap = ({ mockBikeRacks, center, onMapBoundsChange, clickedMarkerCoordinates, onMapClick }) => {
+const BikeRackMap = ({ mockBikeRacks, center, setCenterNull, onMapBoundsChange, clickedMarkerCoordinates, onMapClick }) => {
     const handleCameraChanged = (ev) => {
         console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom);
         const bounds = ev.detail.bounds;
@@ -12,6 +12,7 @@ const BikeRackMap = ({ mockBikeRacks, center, onMapBoundsChange, clickedMarkerCo
             return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
         });
         onMapBoundsChange(visibleBikeRacks);
+        setCenterNull();
     };
 
     return (

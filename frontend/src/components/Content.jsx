@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Flex, Container, VStack, Divider, Text, Button, useToast } from "@chakra-ui/react";
+// import { useQuery } from "@tanstack/react-query";
 
 import BikeRackCard from "./BikeRackCard";
 import BikeRackMap from "./BikeRackMap";
 import ReportModal from "./ReportModal";
 import SearchBar from './SearchBar';
+// import fetchBikeRacks from '../queries/fetchBikeRacks';
 
 const mockBikeRacks = [
     { poi: {key: 1, location: { lat: 49.2827, lng: -123.1207 }}, address: "Vancouver Art Gallery", numThefts: 5, rating: 3.5},
@@ -30,6 +32,10 @@ const Content = () => {
     const handleMapBoundsChange = (visibleMarkers) => {
         setVisibleMarkers(visibleMarkers);
     };
+
+    const setCenterNull = () => {
+        setCenter(null);
+    }
 
     const handleSearch = () => {
         const geocoder = new window.google.maps.Geocoder();
@@ -60,7 +66,6 @@ const Content = () => {
 
     const onMapClick = (e) => {
         setClickedMarkerCoordinates({ lat: e.detail.latLng.lat, lng: e.detail.latLng.lng });
-        setCenter(null);
     };
     
     return (
@@ -97,6 +102,7 @@ const Content = () => {
                         <BikeRackMap
                             mockBikeRacks={mockBikeRacks}
                             center={center}
+                            setCenterNull={setCenterNull}
                             onMapBoundsChange={handleMapBoundsChange}
                             clickedMarkerCoordinates={clickedMarkerCoordinates}
                             onMapClick={onMapClick}
