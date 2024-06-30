@@ -76,10 +76,11 @@ const Content = () => {
                             ) : (
                                 bikeRackData?.length > 0 ? (
                                         bikeRackData
-                                            .filter(({ poi }) => visibleMarkers.some(marker => marker.poi.rackId === poi.rackId))
+                                            .filter(({ poi }) => visibleMarkers?.some(marker => marker.poi.rackId === poi.rackId))
                                             .map(({poi, address, theftsInLastMonth, rating}) => (
                                                 <BikeRackCard
                                                     key={poi.rackId}
+                                                    rackId={poi.rackId}
                                                     address={address}
                                                     numThefts={theftsInLastMonth}
                                                     rating={rating}

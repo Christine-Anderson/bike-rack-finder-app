@@ -23,7 +23,7 @@ const BikeRackCard = ({rackId, address, numThefts, rating}) => {
                     </Flex>
                     <Flex justify="space-between" align="center" width="100%">
                         <StarRating rating={rating}/>
-                        <RatingModal/>
+                        <RatingModal rackId={rackId}/>
                     </Flex>
                 </Flex>
             </CardBody>

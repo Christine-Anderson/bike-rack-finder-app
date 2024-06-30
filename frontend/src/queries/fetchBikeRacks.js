@@ -1,12 +1,14 @@
 const fetchBikeRacks = async () => {    
-    const res = await fetch(
+    const response = await fetch(
         "http://localhost:9000/bikeRack"
     );
     
-    if (!res.ok) {
+    const result = await response.json();
+
+    if (!response.ok) {
         throw new Error("Error fetching bike racks");
     }
     
-    return res.json();
+    return result;
 }
 export default fetchBikeRacks;
