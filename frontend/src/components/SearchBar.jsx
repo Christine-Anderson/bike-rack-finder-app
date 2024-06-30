@@ -3,8 +3,8 @@ import { Input, IconButton, Flex } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 
 const SearchBar = ({ searchValue, setSearchValue, handleSearch }) => {
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
+    const handleKeyPress = (ev) => {
+        if (ev.key === 'Enter') {
             handleSearch();
         }
     };

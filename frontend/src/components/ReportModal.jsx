@@ -8,8 +8,8 @@ const ReportModal = ({ reportType, address, buttonSize, buttonRight }) => {
 
     let [value, setValue] = React.useState("")
 
-    let handleInputChange = (e) => {
-        let inputValue = e.target.value
+    let handleInputChange = (ev) => {
+        let inputValue = ev.target.value
         setValue(inputValue)
     }
 

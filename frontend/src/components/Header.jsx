@@ -1,24 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import { Flex, Heading, Spacer, Link } from "@chakra-ui/react";
+import { useKeycloak } from "@react-keycloak/web";
 
 const Header = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const {keycloak} = useKeycloak();
 
     const handleLogin = () => {
-        // todo login
-        setIsLoggedIn(true);
+        keycloak.login();
     };
 
     const handleLogout = () => {
-        // todo logout
-        setIsLoggedIn(false);
+        keycloak.logout();
     };
 
     return (
         <Flex p={4} align="center" bg="gray.100" borderBottom="1px solid #E2E8F0" height="4rem">
             <Heading size="md">Bike Rack Finder</Heading>
             <Spacer />
-            {isLoggedIn ? (
+            {keycloak.authenticated ? (
                 <Link onClick={handleLogout}>Logout</Link>
             ) : (
                 <Link onClick={handleLogin}>Login</Link>
