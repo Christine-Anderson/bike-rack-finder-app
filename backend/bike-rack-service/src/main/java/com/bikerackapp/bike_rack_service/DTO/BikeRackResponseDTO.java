@@ -4,10 +4,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public record BikeRackResponseDTO (
-        UUID rackId,
+        Poi poi,
         String address,
-        double latitude,
-        double longitude,
         double rating,
         int theftsInLastMonth
 ) implements Serializable {}
+

@@ -1,8 +1,6 @@
 package com.bikerackapp.bike_rack_service.service;
 
-import com.bikerackapp.bike_rack_service.DTO.CreateBikeRackRequestDTO;
-import com.bikerackapp.bike_rack_service.DTO.UpdateBikeRackRequestDTO;
-import com.bikerackapp.bike_rack_service.DTO.BikeRackResponseDTO;
+import com.bikerackapp.bike_rack_service.DTO.*;
 import com.bikerackapp.bike_rack_service.controller.BikeRackController;
 import com.bikerackapp.bike_rack_service.exception.ResourceNotFoundException;
 import com.bikerackapp.bike_rack_service.model.BikeRack;
@@ -121,11 +119,10 @@ public class BikeRackService {
     }
 
     private BikeRackResponseDTO convertToDto(BikeRack bikeRack) {
+        Poi poi = new Poi(bikeRack.getRackId(), new Location(bikeRack.getLatitude(), bikeRack.getLongitude()));
         return new BikeRackResponseDTO(
-                bikeRack.getRackId(),
+                poi,
                 bikeRack.getAddress(),
-                bikeRack.getLatitude(),
-                bikeRack.getLongitude(),
                 bikeRack.getRating(),
                 bikeRack.getTheftsInLastMonth()
         );
