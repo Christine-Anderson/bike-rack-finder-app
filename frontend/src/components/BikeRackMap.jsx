@@ -2,11 +2,11 @@ import { Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
 const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
 
-const BikeRackMap = ({ mockBikeRacks, center, setCenterNull, onMapBoundsChange, clickedMarkerCoordinates, onMapClick }) => {
+const BikeRackMap = ({ bikeRacks, center, setCenterNull, onMapBoundsChange, clickedMarkerCoordinates, onMapClick }) => {
     const handleCameraChanged = (ev) => {
         console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom);
         const bounds = ev.detail.bounds;
-        const visibleBikeRacks = mockBikeRacks.filter(({ poi }) => {
+        const visibleBikeRacks = bikeRacks.filter(({ poi }) => {
             const lat = poi.location.lat;
             const lng = poi.location.lng;
             return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
@@ -23,9 +23,9 @@ const BikeRackMap = ({ mockBikeRacks, center, setCenterNull, onMapBoundsChange, 
             onCameraChanged={handleCameraChanged}
             onClick={onMapClick}
         >
-            {mockBikeRacks.map(({ poi }) => (
+            {bikeRacks?.map(({ poi }) => (
                 <AdvancedMarker
-                    key={poi.key}
+                    key={poi.rackId}
                     position={poi.location}>
                 <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} />
                 </AdvancedMarker>

@@ -1,20 +1,12 @@
 import React, { useState } from 'react';
 import { Flex, Container, VStack, Divider, Text, Button, useToast } from "@chakra-ui/react";
-// import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import BikeRackCard from "./BikeRackCard";
 import BikeRackMap from "./BikeRackMap";
 import ReportModal from "./ReportModal";
 import SearchBar from './SearchBar';
-// import fetchBikeRacks from '../queries/fetchBikeRacks';
-
-const mockBikeRacks = [
-    { poi: {key: 1, location: { lat: 49.2827, lng: -123.1207 }}, address: "Vancouver Art Gallery", numThefts: 5, rating: 3.5},
-    { poi: {key: 2, location: { lat: 49.3043, lng: -123.1443 }}, address: "Stanley Park", numThefts: 5, rating: 3.5},
-    { poi: {key: 3, location: { lat: 49.2713, lng: -123.1340 }}, address: "Granville Island", numThefts: 5, rating: 3.5},
-    { poi: {key: 4, location: { lat: 49.2606, lng: -123.2460 }}, address: "UBC", numThefts: 5, rating: 3.5},
-    { poi: {key: 5, location: { lat: 49.2886, lng: -123.1112 }}, address: "Canada Place", numThefts: 5, rating: 3.5},
-];
+import fetchBikeRacks from '../queries/fetchBikeRacks';
 
 const defaultCoordinates = {
     lat: 49.2827,
@@ -28,6 +20,7 @@ const Content = () => {
     const [center, setCenter] = useState(defaultCoordinates);
 
     const toast = useToast();
+    const { isPending, isError, data: bikeRackData, error } = useQuery({ queryKey: ['bikeRacks'], queryFn: fetchBikeRacks });
 
     const handleMapBoundsChange = (visibleMarkers) => {
         setVisibleMarkers(visibleMarkers);
@@ -64,8 +57,8 @@ const Content = () => {
         });
     };
 
-    const onMapClick = (e) => {
-        setClickedMarkerCoordinates({ lat: e.detail.latLng.lat, lng: e.detail.latLng.lng });
+    const onMapClick = (ev) => {
+        setClickedMarkerCoordinates({ lat: ev.detail.latLng.lat, lng: ev.detail.latLng.lng });
     };
     
     return (
@@ -76,19 +69,26 @@ const Content = () => {
                         <Text textAlign="center" fontSize="xl" fontWeight="bold" mb={2}>Bike Racks</Text>
                         <Divider />
                         <VStack spacing={4} p={4} w="20rem" overflowY="auto" borderRight="1px solid #E2E8F0">
-                            
-                            { mockBikeRacks
-                                .filter(({ poi }) => visibleMarkers.some(marker => marker.poi.key === poi.key))
-                                .map(({poi, address, numThefts, rating}) => (
-                                    <BikeRackCard
-                                        key={poi.key}
-                                        address={address}
-                                        numThefts={numThefts}
-                                        rating={rating}
-                                    />
-                                ))
-                            }
-
+                            { isPending ? (
+                                <Text>Loading bike racks...</Text> // todo toast instead?
+                            ) : isError ? (
+                                <Text>Error loading bike racks: {error.message}</Text>
+                            ) : (
+                                bikeRackData?.length > 0 ? (
+                                        bikeRackData
+                                            .filter(({ poi }) => visibleMarkers.some(marker => marker.poi.rackId === poi.rackId))
+                                            .map(({poi, address, theftsInLastMonth, rating}) => (
+                                                <BikeRackCard
+                                                    key={poi.rackId}
+                                                    address={address}
+                                                    numThefts={theftsInLastMonth}
+                                                    rating={rating}
+                                                />
+                                            ))
+                                    ) : (
+                                        <Text>No bike rack data available.</Text>
+                                    )
+                            )}
                         </VStack>
                     </Flex>
 
@@ -100,7 +100,7 @@ const Content = () => {
                         />
 
                         <BikeRackMap
-                            mockBikeRacks={mockBikeRacks}
+                            bikeRacks={bikeRackData}
                             center={center}
                             setCenterNull={setCenterNull}
                             onMapBoundsChange={handleMapBoundsChange}
