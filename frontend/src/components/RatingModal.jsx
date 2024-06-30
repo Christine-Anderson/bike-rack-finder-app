@@ -2,18 +2,34 @@ import React from "react";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import { NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from "@chakra-ui/react";
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb } from "@chakra-ui/react";
-import { Button, FormControl, FormLabel, Flex } from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Flex, useDisclosure, useToast } from "@chakra-ui/react";
+import { useKeycloak } from "@react-keycloak/web";
 
 const RatingModal = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const {keycloak} = useKeycloak();
+    const toast = useToast();
 
     const [value, setValue] = React.useState(0);
     const handleChange = (value) => setValue(value);
 
+    const handleOpen = () => {
+        if (keycloak.authenticated) {
+            onOpen();
+        } else {
+            toast({
+                title: "Login to Access",
+                description: "Please login to submit a report.",
+                status: "info",
+                duration: 5000,
+                isClosable: true,
+            })
+        }
+    }
+
     return (
         <>
-            <Button size="sm" onClick={onOpen}>Rate</Button>
+            <Button size="sm" onClick={handleOpen}>Rate</Button>
 
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />

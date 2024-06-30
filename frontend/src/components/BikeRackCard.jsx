@@ -1,9 +1,10 @@
 import { Card, CardHeader, CardBody, CardFooter, Text, Heading, Flex } from "@chakra-ui/react";
+
 import StarRating from "./StarRating";
 import ReportModal from "./ReportModal";
 import RatingModal from "./RatingModal";
 
-const BikeRackCard = ({address, numThefts, rating}) => {
+const BikeRackCard = ({rackId, address, numThefts, rating}) => {
     return (
         <Card align="center" width="100%" size="sm">
             <CardHeader>
@@ -27,12 +28,13 @@ const BikeRackCard = ({address, numThefts, rating}) => {
                 </Flex>
             </CardBody>
             <CardFooter>
-                        <ReportModal
-                            reportType={"Removal"}
-                            address={address}
-                            buttonSize={"sm"}
-                            buttonRight={"auto"}
-                        />
+                <ReportModal
+                    rackId={rackId}
+                    reportType={"Removal"}
+                    address={address}
+                    buttonSize={"sm"}
+                    buttonRight={"auto"}
+                />
             </CardFooter>
         </Card>
     );

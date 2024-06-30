@@ -70,7 +70,7 @@ const Content = () => {
                         <Divider />
                         <VStack spacing={4} p={4} w="20rem" overflowY="auto" borderRight="1px solid #E2E8F0">
                             { isPending ? (
-                                <Text>Loading bike racks...</Text> // todo toast instead?
+                                <Text>Loading bike racks...</Text>
                             ) : isError ? (
                                 <Text>Error loading bike racks: {error.message}</Text>
                             ) : (

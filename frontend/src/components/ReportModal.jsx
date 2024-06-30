@@ -1,10 +1,12 @@
 import React from "react";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
-import { Button, Text, FormControl, FormLabel, Textarea } from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, Text, FormControl, FormLabel, Textarea, useDisclosure, useToast } from "@chakra-ui/react";
+import { useKeycloak } from "@react-keycloak/web";
 
-const ReportModal = ({ reportType, address, buttonSize, buttonRight }) => {
+const ReportModal = ({ rackId, reportType, address, buttonSize, buttonRight }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const {keycloak} = useKeycloak();
+    const toast = useToast();
 
     let [value, setValue] = React.useState("")
 
@@ -13,9 +15,27 @@ const ReportModal = ({ reportType, address, buttonSize, buttonRight }) => {
         setValue(inputValue)
     }
 
+    const handleOpen = () => {
+        if (keycloak.authenticated) {
+            onOpen();
+        } else {
+            toast({
+                title: "Login to Access",
+                description: "Please login to submit a report.",
+                status: "info",
+                duration: 5000,
+                isClosable: true,
+            })
+        }
+    }
+
+    const onClickSubmit = (rackId, reportType) => {
+        console.log("submit: " + rackId, +" "+reportType);
+    }
+
     return (
         <>
-            <Button size={buttonSize} right={buttonRight} onClick={onOpen}>
+            <Button size={buttonSize} right={buttonRight} onClick={handleOpen}>
                 {`Report ${reportType}`}
             </Button>
 
@@ -37,13 +57,12 @@ const ReportModal = ({ reportType, address, buttonSize, buttonRight }) => {
                                 onChange={handleInputChange}
                                 placeholder="Enter additional details here"
                                 size="sm"
+                                maxLength={255}
                             />
                         </FormControl>
                 </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme="blue" mr={6}>Submit</Button>
-                        {/* todo <Button colorScheme="blue" mr={6} onClick={onClick}>Submit</Button> 
-                        todo figure out how to pass in the correct rack and then call the api*/}
+                        <Button colorScheme="blue" mr={6} onClick={() => onClickSubmit(rackId, reportType)}>Submit</Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
