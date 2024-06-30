@@ -15,6 +15,7 @@ const BikeRackCard = ({rackId, address, numThefts, rating}) => {
                     <Flex justify="space-between" align="center" width="100%">
                         <Text size="sm" mr={10}>{`Thefts: ${numThefts}`}</Text>
                         <ReportModal
+                            rackId={rackId}
                             reportType={"Theft"}
                             address={address}
                             buttonSize={"sm"}

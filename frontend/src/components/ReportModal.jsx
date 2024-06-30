@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import { Button, Text, FormControl, FormLabel, Textarea, useDisclosure, useToast } from "@chakra-ui/react";
 import { useKeycloak } from "@react-keycloak/web";
+import { useMutation } from "@tanstack/react-query";
+
+import submitTheftReport from "../queries/submitTheftReport";
 
 const ReportModal = ({ rackId, reportType, address, buttonSize, buttonRight }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const {keycloak} = useKeycloak();
     const toast = useToast();
+    const theftReportMutation = useMutation(submitTheftReport);
 
-    let [value, setValue] = React.useState("")
+    let [value, setValue] = React.useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     let handleInputChange = (ev) => {
         let inputValue = ev.target.value
@@ -29,9 +34,35 @@ const ReportModal = ({ rackId, reportType, address, buttonSize, buttonRight }) =
         }
     }
 
-    const onClickSubmit = (rackId, reportType) => {
-        console.log("submit: " + rackId, +" "+reportType);
+    const onClickSubmit = () => {
+        const userId = keycloak.tokenParsed.sub;
+        console.log("submit: " + rackId + ", " + reportType + ", " + value + ", " + userId);
+        const accessToken = keycloak.token;
+        setIsLoading(true);
+        theftReportMutation.mutate({
+            rackId: rackId,
+            reportType: "THEFT",
+            details: value,
+            userId: userId, 
+            accessToken: accessToken
+        });
     }
+
+    useEffect(() => {
+        if (theftReportMutation.isError) {
+            toast({
+                title: "Error Submitting Theft Report",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+            setIsLoading(false);
+        } else if (theftReportMutation.isSuccess) {
+            console.log("submit theft report: " + rackId + ", " + value);
+            onClose();
+            setIsLoading(false);
+        }
+    }, [theftReportMutation.isError, theftReportMutation.isSuccess])
 
     return (
         <>
@@ -62,7 +93,15 @@ const ReportModal = ({ rackId, reportType, address, buttonSize, buttonRight }) =
                         </FormControl>
                 </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme="blue" mr={6} onClick={() => onClickSubmit(rackId, reportType)}>Submit</Button>
+                        <Button 
+                            isLoading={isLoading}
+                            loadingText="Submitting"
+                            colorScheme="blue"
+                            mr={6}
+                            onClick={onClickSubmit}
+                        >
+                            Submit
+                        </Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
