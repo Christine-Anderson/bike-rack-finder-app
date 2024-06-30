@@ -6,7 +6,6 @@ const fetchBikeRacks = async () => {
     if (!res.ok) {
         throw new Error("Error fetching bike racks");
     }
-    console.log("christine ");
     
     return res.json();
 }

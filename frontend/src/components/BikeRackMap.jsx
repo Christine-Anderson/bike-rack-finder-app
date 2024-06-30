@@ -1,4 +1,5 @@
 import { Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
+import ClusteredBikeRackMarkers from './ClusteredBikeRackMarkers';
 
 const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
 
@@ -23,13 +24,7 @@ const BikeRackMap = ({ bikeRacks, center, setCenterNull, onMapBoundsChange, clic
             onCameraChanged={handleCameraChanged}
             onClick={onMapClick}
         >
-            {bikeRacks?.map(({ poi }) => (
-                <AdvancedMarker
-                    key={poi.rackId}
-                    position={poi.location}>
-                <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} />
-                </AdvancedMarker>
-            ))}
+            <ClusteredBikeRackMarkers bikeRacks={bikeRacks} />
 
             {clickedMarkerCoordinates && (
                 <AdvancedMarker
