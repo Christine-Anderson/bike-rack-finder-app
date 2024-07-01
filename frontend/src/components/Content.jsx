@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flex, Container, VStack, Divider, Text, Button, useToast } from "@chakra-ui/react";
+import { Flex, Container, VStack, Divider, Text, Button, useToast, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
 import BikeRackCard from "./BikeRackCard";
@@ -20,7 +20,7 @@ const Content = () => {
     const [center, setCenter] = useState(defaultCoordinates);
 
     const toast = useToast();
-    const { isPending, isError, data: bikeRackData, error } = useQuery({ queryKey: ['bikeRacks'], queryFn: fetchBikeRacks });
+    const { isLoading, isError, data: bikeRackData, error } = useQuery({ queryKey: ['bikeRacks'], queryFn: fetchBikeRacks });
 
     const handleMapBoundsChange = (visibleMarkers) => {
         setVisibleMarkers(visibleMarkers);
@@ -69,8 +69,14 @@ const Content = () => {
                         <Text textAlign="center" fontSize="xl" fontWeight="bold" mb={2}>Bike Racks</Text>
                         <Divider />
                         <VStack spacing={4} p={4} w="20rem" overflowY="auto" borderRight="1px solid #E2E8F0">
-                            { isPending ? (
-                                <Text>Loading bike racks...</Text>
+                            { isLoading || !bikeRackData ? (
+                                <Spinner
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    color='blue.500'
+                                    size='xl'
+                                />
                             ) : isError ? (
                                 <Text>Error loading bike racks: {error.message}</Text>
                             ) : (
@@ -113,10 +119,9 @@ const Content = () => {
                             <Button colorScheme="blue" left="50%" transform="translateX(-50%)">Find Closest Rack</Button>
                             <ReportModal
                                 reportType={"New Rack"}
-                                address={"test"}
                                 buttonSize={"md"}
                                 buttonRight={"0"}
-                                // todo figure out how to pass in the one that was clicked
+                                clickedMarkerCoordinates={clickedMarkerCoordinates}
                             />
                         </Flex>
                     </Flex>
