@@ -1,4 +1,4 @@
-const submitTheftReport = async ({rackId, reportType, details, userId, accessToken}) => {
+const submitReport = async ({rackId, reportType, details, userId, accessToken}) => {
     const requestBody = {
         rackId: rackId,
         reportType: reportType,
@@ -21,9 +21,9 @@ const submitTheftReport = async ({rackId, reportType, details, userId, accessTok
     const result = await response.json();
 
     if (!response.ok) {
-        throw new Error(`Error submitting theft report for bike rack ${rackId}`);
+        throw new Error(`Error submitting ${reportType} report for bike rack ${rackId}`);
     }
 
     return result;
 }
-export default submitTheftReport;
+export default submitReport;

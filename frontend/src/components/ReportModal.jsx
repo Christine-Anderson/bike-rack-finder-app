@@ -4,13 +4,14 @@ import { Button, Text, FormControl, FormLabel, Textarea, useDisclosure, useToast
 import { useKeycloak } from "@react-keycloak/web";
 import { useMutation } from "@tanstack/react-query";
 
-import submitTheftReport from "../queries/submitTheftReport";
+import submitReport from "../queries/submitReport";
 
 const ReportModal = ({ rackId, reportType, address, buttonSize, buttonRight }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const {keycloak} = useKeycloak();
     const toast = useToast();
-    const theftReportMutation = useMutation(submitTheftReport);
+    const theftReportMutation = useMutation(submitReport);
+    const removalReportMutation = useMutation(submitReport);
 
     let [value, setValue] = React.useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -34,35 +35,46 @@ const ReportModal = ({ rackId, reportType, address, buttonSize, buttonRight }) =
         }
     }
 
-    const onClickSubmit = () => {
+    const handleSubmit = () => {
         const userId = keycloak.tokenParsed.sub;
-        console.log("submit: " + rackId + ", " + reportType + ", " + value + ", " + userId);
         const accessToken = keycloak.token;
         setIsLoading(true);
-        theftReportMutation.mutate({
-            rackId: rackId,
-            reportType: "THEFT",
+
+        const report = {
+            rackId,
             details: value,
-            userId: userId, 
-            accessToken: accessToken
-        });
+            userId,
+            accessToken
+        }
+
+        if (reportType === "Theft") {
+            theftReportMutation.mutate({
+                ...report,
+                reportType: "THEFT"
+            });
+        } else if (reportType === "Removal") {
+            removalReportMutation.mutate({
+                ...report,
+                reportType: "REMOVED_RACK"
+            });
+        }
     }
 
     useEffect(() => {
-        if (theftReportMutation.isError) {
+        if (theftReportMutation.isError || removalReportMutation.isError) {
             toast({
-                title: "Error Submitting Theft Report",
+                title: "Error Submitting Report",
                 status: "error",
                 duration: 5000,
                 isClosable: true,
             });
             setIsLoading(false);
-        } else if (theftReportMutation.isSuccess) {
-            console.log("submit theft report: " + rackId + ", " + value);
+        } else if (theftReportMutation.isSuccess || removalReportMutation.isSuccess) {
+            console.log("submit report: " + rackId + ", " + value);
             onClose();
             setIsLoading(false);
         }
-    }, [theftReportMutation.isError, theftReportMutation.isSuccess])
+    }, [theftReportMutation.isError, theftReportMutation.isSuccess, removalReportMutation.isError, removalReportMutation.isSuccess])
 
     return (
         <>
@@ -98,7 +110,7 @@ const ReportModal = ({ rackId, reportType, address, buttonSize, buttonRight }) =
                             loadingText="Submitting"
                             colorScheme="blue"
                             mr={6}
-                            onClick={onClickSubmit}
+                            onClick={handleSubmit}
                         >
                             Submit
                         </Button>
