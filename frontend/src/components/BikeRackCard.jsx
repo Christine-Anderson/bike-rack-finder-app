@@ -1,12 +1,27 @@
+import React, { useRef, useEffect } from 'react';
 import { Card, CardHeader, CardBody, CardFooter, Text, Heading, Flex } from "@chakra-ui/react";
 
 import StarRating from "./StarRating";
 import ReportModal from "./ReportModal";
 import RatingModal from "./RatingModal";
 
-const BikeRackCard = ({rackId, address, numThefts, rating}) => {
+const BikeRackCard = ({rackId, address, numThefts, rating, isSelected}) => {
+    const cardRef = useRef(null);
+
+    useEffect(() => {
+        if (isSelected && cardRef.current) {
+            cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [isSelected]);
+
     return (
-        <Card align="center" width="100%" size="sm">
+        <Card
+            align="center"
+            width="100%"
+            size="sm"
+            ref={cardRef}
+            outline={isSelected ? '2px solid blue' : 'none'}
+        >
             <CardHeader>
                 <Heading size="sm"> {address} </Heading>
             </CardHeader>

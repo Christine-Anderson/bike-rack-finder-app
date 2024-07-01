@@ -4,7 +4,7 @@ import { InfoWindow, useMap } from '@vis.gl/react-google-maps';
 import BikeRackMarker from './BikeRackMarker';
 
 
-const ClusteredBikeRackMarkers = ({ bikeRacks }) => {
+const ClusteredBikeRackMarkers = ({ bikeRacks, scrollToBikeRackCard }) => {
     const [markers, setMarkers] = useState({});
     const [selectedBikeRackId, setSelectedBikeRackId] = useState(null);
 
@@ -64,6 +64,7 @@ const ClusteredBikeRackMarkers = ({ bikeRacks }) => {
                     rack={rack}
                     onClick={handleMarkerClick}
                     setMarkerRef={setMarkerRef}
+                    scrollToCard={scrollToBikeRackCard}
                 />
             ))}
 

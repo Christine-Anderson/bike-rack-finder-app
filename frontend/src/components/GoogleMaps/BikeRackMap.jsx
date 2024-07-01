@@ -5,7 +5,7 @@ import ClosestMarker from './InfoWindowMarker';
 
 const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
 
-const BikeRackMap = ({ bikeRacks, center, setCenterNull, onMapBoundsChange, clickedMarkerCoordinates, onMapClick, closestMarker }) => {
+const BikeRackMap = ({ bikeRacks, center, setCenterNull, onMapBoundsChange, clickedMarkerCoordinates, onMapClick, closestMarker, scrollToBikeRackCard }) => {
     const handleCameraChanged = (ev) => {
         const bounds = ev.detail.bounds;
         const visibleBikeRacks = bikeRacks?.filter(({ poi }) => {
@@ -25,7 +25,10 @@ const BikeRackMap = ({ bikeRacks, center, setCenterNull, onMapBoundsChange, clic
             onCameraChanged={handleCameraChanged}
             onClick={onMapClick}
         >
-            <ClusteredBikeRackMarkers bikeRacks={bikeRacks} />
+            <ClusteredBikeRackMarkers
+                bikeRacks={bikeRacks}
+                scrollToBikeRackCard={scrollToBikeRackCard}    
+            />
 
             {clickedMarkerCoordinates && (
                 <AdvancedMarker

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Flex, Container, VStack, Divider, Text, Button, useToast, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -19,6 +19,7 @@ const Content = () => {
     const [searchValue, setSearchValue] = useState('');
     const [center, setCenter] = useState(defaultCoordinates);
     const [closestMarker, setClosestMarker] = useState(null);
+    const [selectedRackId, setSelectedRackId] = useState(null);
 
     const toast = useToast();
     const { isLoading, isError, data: bikeRackData, error } = useQuery({ queryKey: ['bikeRacks'], queryFn: fetchBikeRacks });
@@ -30,6 +31,10 @@ const Content = () => {
     const setCenterNull = () => {
         setCenter(null);
     }
+
+    const scrollToBikeRackCard = useCallback((rackId) => {
+        setSelectedRackId(rackId);
+    }, []);
 
     const handleSearch = () => {
         const geocoder = new window.google.maps.Geocoder();
@@ -132,6 +137,7 @@ const Content = () => {
                                                     address={address}
                                                     numThefts={theftsInLastMonth}
                                                     rating={rating}
+                                                    isSelected={selectedRackId === poi.rackId}
                                                 />
                                             ))
                                     ) : (
@@ -156,6 +162,7 @@ const Content = () => {
                             clickedMarkerCoordinates={clickedMarkerCoordinates}
                             onMapClick={onMapClick}
                             closestMarker={closestMarker}
+                            scrollToBikeRackCard={scrollToBikeRackCard}
                         />
 
                         <Flex alignItems="center" justifyContent="space-between" mt={2}>

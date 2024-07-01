@@ -1,9 +1,13 @@
 import React, {useCallback} from 'react';
 import {AdvancedMarker, Pin} from '@vis.gl/react-google-maps';
 
-const BikeRackMarker = ({ rack, onClick, setMarkerRef }) => {
+const BikeRackMarker = ({ rack, onClick, setMarkerRef, scrollToCard }) => {
 
-    const handleClick = useCallback(() => onClick(rack), [onClick, rack]);
+    const handleClick = useCallback(() => {
+        onClick(rack);
+        scrollToCard(rack.poi.rackId);
+    }, [onClick, rack, scrollToCard]);
+
     const ref = useCallback(
         (marker) => setMarkerRef(marker, rack.poi.rackId),
         [setMarkerRef, rack.key]
