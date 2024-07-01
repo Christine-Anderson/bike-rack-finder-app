@@ -3,7 +3,7 @@ import { Flex, Container, VStack, Divider, Text, Button, useToast, Spinner } fro
 import { useQuery } from "@tanstack/react-query";
 
 import BikeRackCard from "./BikeRackCard";
-import BikeRackMap from "./BikeRackMap";
+import BikeRackMap from "./GoogleMaps/BikeRackMap";
 import ReportModal from "./ReportModal";
 import SearchBar from './SearchBar';
 import fetchBikeRacks from '../queries/fetchBikeRacks';
