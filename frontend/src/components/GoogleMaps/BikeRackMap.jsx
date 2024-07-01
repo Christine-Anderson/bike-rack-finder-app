@@ -20,7 +20,7 @@ const BikeRackMap = ({ bikeRacks, center, setCenterNull, onMapBoundsChange, clic
     return (
         <Map
             mapId={mapId}
-            defaultZoom={14}
+            defaultZoom={13}
             center={center}
             onCameraChanged={handleCameraChanged}
             onClick={onMapClick}
