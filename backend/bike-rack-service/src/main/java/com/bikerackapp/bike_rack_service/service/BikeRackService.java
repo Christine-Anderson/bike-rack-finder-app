@@ -10,9 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,7 +38,6 @@ public class BikeRackService {
         return convertToDto(bikeRack);
     }
 
-    @Cacheable(value = "bikeRacks")
     public List<BikeRackResponseDTO> getAllBikeRacks() {
         List<BikeRack> bikeRacks = bikeRackRepository.findAll();
         return bikeRacks.stream()
@@ -49,14 +45,12 @@ public class BikeRackService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO getBikeRackById(UUID bikeRackId) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bike rack with ID " + bikeRackId + " not found"));
         return convertToDto(bikeRack);
     }
 
-    @CachePut(cacheNames = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO updateBikeRack(UUID bikeRackId, UpdateBikeRackRequestDTO bikeRackRequestDTO) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bike rack with ID " + bikeRackId + " not found"));
@@ -69,7 +63,6 @@ public class BikeRackService {
         return convertToDto(bikeRack);
     }
 
-    @CachePut(cacheNames = "bikeRacks", key = "#bikeRackId")
     public BikeRackResponseDTO updateRating(UUID bikeRackId, double newRating) {
         BikeRack bikeRack = bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bike rack with ID " + bikeRackId + " not found"));
@@ -81,7 +74,6 @@ public class BikeRackService {
         return convertToDto(bikeRack);
     }
 
-    @CacheEvict(cacheNames = "bikeRacks", key = "#bikeRackId")
     public boolean deleteBikeRack(UUID bikeRackId) {
         bikeRackRepository.findById(bikeRackId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bike rack with ID " + bikeRackId + " not found"));
@@ -98,9 +90,11 @@ public class BikeRackService {
             JsonNode rootNode = objectMapper.readTree(message);
 
             String reportType = rootNode.get("reportType").asText();
+            UUID bikeRackId = UUID.fromString(rootNode.get("bikeRackId").asText());
+
             if(reportType.equals("THEFT")) {
                 bikeRackRepository.updateTheftsInLastMonth(
-                        UUID.fromString(rootNode.get("bikeRackId").asText()),
+                        bikeRackId,
                         rootNode.get("theftsInLastMonth").asInt()
                 );
             } else if (reportType.equals("NEW_RACK")) {
@@ -111,7 +105,7 @@ public class BikeRackService {
                 );
                 bikeRackRepository.save(bikeRack);
             } else if (reportType.equals("REMOVED_RACK")) {
-                bikeRackRepository.deleteById(UUID.fromString(rootNode.get("bikeRackId").asText()));
+                bikeRackRepository.deleteById(bikeRackId);
             }
         } catch (Exception e) {
             LOGGER.error("Error decoding message from Reporting Service\nmessage: {}\nerror: {}", message, e.getMessage());
