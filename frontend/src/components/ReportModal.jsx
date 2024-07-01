@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import { Button, Text, FormControl, FormLabel, Textarea, useDisclosure, useToast } from "@chakra-ui/react";
 import { useKeycloak } from "@react-keycloak/web";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import submitReport from "../queries/submitReport";
 import submitNewRackReport from "../queries/submitNewRackReport";
@@ -11,9 +11,22 @@ const ReportModal = ({ rackId, address, reportType, clickedMarkerCoordinates, bu
     const { isOpen, onOpen, onClose } = useDisclosure();
     const {keycloak} = useKeycloak();
     const toast = useToast();
-    const theftReportMutation = useMutation(submitReport);
-    const removalReportMutation = useMutation(submitReport);
-    const newRackReportMutation = useMutation(submitNewRackReport);
+    const queryClient = useQueryClient();
+    const theftReportMutation = useMutation(submitReport, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('bikeRacks');
+        },
+    });
+    const removalReportMutation = useMutation(submitReport, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('bikeRacks');
+        },
+    });
+    const newRackReportMutation = useMutation(submitNewRackReport, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('bikeRacks');
+        },
+    });
 
     let [value, setValue] = React.useState("");
     const [isLoading, setIsLoading] = useState(false);

@@ -4,7 +4,7 @@ import { NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepp
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb } from "@chakra-ui/react";
 import { Button, FormControl, FormLabel, Flex, useDisclosure, useToast } from "@chakra-ui/react";
 import { useKeycloak } from "@react-keycloak/web";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import submitRating from '../queries/submitBikeRackRating';
 
@@ -12,7 +12,12 @@ const RatingModal = ({rackId}) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const {keycloak} = useKeycloak();
     const toast = useToast();
-    const ratingMutation = useMutation(submitRating);
+    const queryClient = useQueryClient();
+    const ratingMutation = useMutation(submitRating, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('bikeRacks');
+        },
+    });
 
     const [value, setValue] = React.useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +58,6 @@ const RatingModal = ({rackId}) => {
             });
             setIsLoading(false);
         } else if (ratingMutation.isSuccess) {
-            console.log("submit: " + rackId + ", " + String(value));
             handleChange(0);
             onClose();
             setIsLoading(false);

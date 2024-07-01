@@ -12,8 +12,7 @@ const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 1, // todo change to 2hours (2 * 60 * 60 * 1000)
-            cacheTime: 1,
+            cacheTime: 2 * 60 * 60 * 1000,
         },
     },
 });
