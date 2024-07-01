@@ -36,6 +36,7 @@ public class ReportService {
         );
 
         if (newReport.reportType() == Report.ReportType.NEW_RACK) {
+            report.setAddress(newReport.address());
             report.setLatitude(newReport.latitude());
             report.setLongitude(newReport.longitude());
         }
