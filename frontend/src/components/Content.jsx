@@ -18,6 +18,7 @@ const Content = () => {
     const [clickedMarkerCoordinates, setClickedMarkerCoordinates] = useState(null);
     const [searchValue, setSearchValue] = useState('');
     const [center, setCenter] = useState(defaultCoordinates);
+    const [closestMarker, setClosestMarker] = useState(null);
 
     const toast = useToast();
     const { isLoading, isError, data: bikeRackData, error } = useQuery({ queryKey: ['bikeRacks'], queryFn: fetchBikeRacks });
@@ -59,6 +60,47 @@ const Content = () => {
 
     const onMapClick = (ev) => {
         setClickedMarkerCoordinates({ lat: ev.detail.latLng.lat, lng: ev.detail.latLng.lng });
+        setClosestMarker(null);
+    };
+
+    const findClosestRack = () => {
+        if (!clickedMarkerCoordinates) {
+            toast({
+                title: "No Location Selected",
+                description: "Please select a location on the map.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            })
+            return;
+        }
+        if( !visibleMarkers || visibleMarkers.length === 0) {
+            toast({
+                title: "No Racks Nearby",
+                status: "info",
+                duration: 5000,
+                isClosable: true,
+            })
+            return;
+        }
+
+        let closestRack = null;
+        let closestDistance = Number.MAX_VALUE;
+
+        visibleMarkers.forEach((rack) => {
+            const rackCoordinates = rack.poi.location;
+            const distance = Math.sqrt(
+                Math.pow(rackCoordinates.lat - clickedMarkerCoordinates.lat, 2) +
+                Math.pow(rackCoordinates.lng - clickedMarkerCoordinates.lng, 2)
+            );
+
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestRack = rack;
+            }
+        });
+
+        setClosestMarker(closestRack);
     };
     
     return (
@@ -113,10 +155,18 @@ const Content = () => {
                             onMapBoundsChange={handleMapBoundsChange}
                             clickedMarkerCoordinates={clickedMarkerCoordinates}
                             onMapClick={onMapClick}
+                            closestMarker={closestMarker}
                         />
 
                         <Flex alignItems="center" justifyContent="space-between" mt={2}>
-                            <Button colorScheme="blue" left="50%" transform="translateX(-50%)">Find Closest Rack</Button>
+                            <Button
+                                colorScheme="blue"
+                                left="50%"
+                                transform="translateX(-50%)"
+                                onClick={findClosestRack}
+                            >
+                                Find Closest Rack
+                            </Button>
                             <ReportModal
                                 reportType={"New Rack"}
                                 buttonSize={"md"}

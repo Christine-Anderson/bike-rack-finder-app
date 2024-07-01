@@ -71,7 +71,7 @@ const ClusteredBikeRackMarkers = ({ bikeRacks }) => {
                 <InfoWindow
                     anchor={markers[selectedBikeRackId]}
                     onCloseClick={handleInfoWindowClose}>
-                    {selectedBikeRack && selectedBikeRack.address}
+                    <h1>{selectedBikeRack && selectedBikeRack.address}</h1>
                 </InfoWindow>
             )}
         </>
