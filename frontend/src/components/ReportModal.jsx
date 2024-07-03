@@ -8,6 +8,10 @@ import submitReport from "../queries/submitReport";
 import submitNewRackReport from "../queries/submitNewRackReport";
 
 const ReportModal = ({ rackId, address, reportType, clickedMarkerCoordinates, buttonSize, buttonRight }) => {
+    const [value, setValue] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [modalAddress, setModalAddress] = useState("Unknown Address");
+    
     const { isOpen, onOpen, onClose } = useDisclosure();
     const {keycloak} = useKeycloak();
     const toast = useToast();
@@ -28,11 +32,7 @@ const ReportModal = ({ rackId, address, reportType, clickedMarkerCoordinates, bu
         },
     });
 
-    let [value, setValue] = React.useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [modalAddress, setModalAddress] = useState("Unknown Address");
-
-    let handleInputChange = (ev) => {
+    const handleInputChange = (ev) => {
         let inputValue = ev.target.value
         setValue(inputValue)
     }

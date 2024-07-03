@@ -9,6 +9,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import submitRating from '../queries/submitBikeRackRating';
 
 const RatingModal = ({rackId}) => {
+    const [value, setValue] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    
     const { isOpen, onOpen, onClose } = useDisclosure();
     const {keycloak} = useKeycloak();
     const toast = useToast();
@@ -18,9 +21,6 @@ const RatingModal = ({rackId}) => {
             queryClient.invalidateQueries('bikeRacks');
         },
     });
-
-    const [value, setValue] = React.useState(0);
-    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (value) => setValue(value);
 
