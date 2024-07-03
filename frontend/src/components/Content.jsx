@@ -22,7 +22,11 @@ const Content = () => {
     const [selectedRackId, setSelectedRackId] = useState(null);
 
     const toast = useToast();
-    const { isLoading, isError, data: bikeRackData, error } = useQuery({ queryKey: ['bikeRacks'], queryFn: fetchBikeRacks });
+    const { isLoading, isError, data: bikeRackData, error } = useQuery({ 
+        queryKey: ['bikeRacks'],
+        queryFn: fetchBikeRacks,
+        refetchOnWindowFocus: false,
+    });
 
     const handleMapBoundsChange = (visibleMarkers) => {
         setVisibleMarkers(visibleMarkers);
@@ -116,7 +120,7 @@ const Content = () => {
                         <Text textAlign="center" fontSize="xl" fontWeight="bold" mb={2}>Bike Racks</Text>
                         <Divider />
                         <VStack spacing={4} p={4} w="20rem" overflowY="auto" borderRight="1px solid #E2E8F0">
-                            { isLoading || !bikeRackData ? (
+                            { isLoading ? (
                                 <Spinner
                                     thickness='4px'
                                     speed='0.65s'
