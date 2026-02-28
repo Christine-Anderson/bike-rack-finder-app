@@ -1,7 +1,7 @@
 ## Bike Rack Finder (Summer Of Shipping)
 
 ### Overview
-A bicycle rack finding app using data from the City of Vancouver. I made this to solve the problem of figuring out where to lock up my bike without having visited an area before. As well, this app incorporates user reported thefts and bike rack ratings to help gage whether you want to use a rack.
+A bicycle rack finding app using data from the City of Vancouver. This app incorporates user reported thefts and bike rack ratings to help gage whether you want to use a rack.
 
 ![Microservices Architecture Diagram](assets/bike-rack-finder-app.png)
 
