@@ -1,4 +1,4 @@
-## Bike Rack Finder (Summer Of Shipping)
+## Bike Rack Finder
 
 ### Overview
 A bicycle rack finding app using data from the City of Vancouver. This app incorporates user reported thefts and bike rack ratings to help gage whether you want to use a rack.
